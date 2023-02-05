@@ -9,7 +9,7 @@
    <bottom>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" text="Invert" />
+            <Button mnemonicParsing="false" onAction="#render" text="Render" />
          </children>
       </HBox>
    </bottom>

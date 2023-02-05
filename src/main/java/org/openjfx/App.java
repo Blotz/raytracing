@@ -1,7 +1,10 @@
 package org.openjfx;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.scene.image.Image;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
 
 import javafx.scene.Scene;
@@ -44,6 +47,17 @@ public class App extends Application {
         stage.show();
     }
 
+    @FXML
+    public void render(ActionEvent event) {
+        System.out.println("Starting main render loop...");
+        // generate a writable image
+        Image rimage = imageView.getImage(); // Read only copy
+        WritableImage image = new WritableImage(rimage.getPixelReader(), (int) rimage.getWidth(), (int) rimage.getHeight());
+        // call render function
+        Render.render(image);
+        // set image to ImageView
+        imageView.setImage(image);
+    }
     
     public static void main(String[] args) {
         launch();
