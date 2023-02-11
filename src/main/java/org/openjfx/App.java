@@ -3,7 +3,6 @@ package org.openjfx;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.scene.image.Image;
-import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
 
@@ -20,17 +19,17 @@ import java.io.IOException;
  * JavaFX App
  */
 public class App extends Application {
-    public static final int imageWidth = 256;
-    public static final int imageHeight = 256;
+    // image
+    public static final  double aspectRatio = 16.0 / 10.0;
+    public static final int imageWidth = 400;
+    public static final int imageHeight = (int) (imageWidth / aspectRatio);
 
     @FXML
     private ImageView imageView;
 
     @Override
     public void start(Stage stage) throws IOException {
-        Parent root = null;
-        
-        root = FXMLLoader.load(getClass().getResource("fxml/scene.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("fxml/scene.fxml"));
         Image image = new Image(getClass().getResource("image.jpg").toString(), imageWidth, imageHeight, true, true);
         // look up ImageView
         imageView = (ImageView) root.lookup("#imageView");
@@ -51,12 +50,13 @@ public class App extends Application {
     public void render(ActionEvent event) {
         System.out.println("Starting main render loop...");
         // generate a writable image
-        Image rimage = imageView.getImage(); // Read only copy
-        WritableImage image = new WritableImage(rimage.getPixelReader(), (int) rimage.getWidth(), (int) rimage.getHeight());
+        WritableImage rwimage = new WritableImage(imageWidth, imageHeight);
         // call render function
-        Render.render(image);
+        Render.render(rwimage);
         // set image to ImageView
-        imageView.setImage(image);
+        imageView.setImage(rwimage);
+        imageView.setFitWidth((double) imageWidth);
+        imageView.setFitHeight((double) imageHeight);
     }
     
     public static void main(String[] args) {
