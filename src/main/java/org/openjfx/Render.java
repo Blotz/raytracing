@@ -66,7 +66,7 @@ public class Render {
     }
     
     static boolean hitSphere(Vec center, double radius, Ray r) {
-        Vec oc = r.origin().sub(center);
+        Vec oc = Vec.sub(r.origin(), center);
         double a = Vec.dot(r.direction(), r.direction());
         double b = 2.0 * Vec.dot(oc, r.direction());
         double c = Vec.dot(oc, oc) - radius*radius;
