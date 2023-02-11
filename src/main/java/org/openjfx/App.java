@@ -3,6 +3,7 @@ package org.openjfx;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.scene.image.Image;
+import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
 
@@ -51,12 +52,13 @@ public class App extends Application {
         System.out.println("Starting main render loop...");
         // generate a writable image
         WritableImage rwimage = new WritableImage(imageWidth, imageHeight);
+        PixelWriter pixelWriter = rwimage.getPixelWriter();
         // call render function
-        Render.render(rwimage);
+        Render.render(pixelWriter);
         // set image to ImageView
         imageView.setImage(rwimage);
-        imageView.setFitWidth((double) imageWidth);
-        imageView.setFitHeight((double) imageHeight);
+        imageView.setFitWidth(imageWidth);
+        imageView.setFitHeight(imageHeight);
     }
     
     public static void main(String[] args) {
