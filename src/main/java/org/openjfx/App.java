@@ -21,7 +21,7 @@ import java.io.IOException;
  */
 public class App extends Application {
     // image
-    public static final  double aspectRatio = 16.0 / 10.0;
+    public static final  double aspectRatio = 16.0 / 9.0;
     public static final int imageWidth = 400;
     public static final int imageHeight = (int) (imageWidth / aspectRatio);
 

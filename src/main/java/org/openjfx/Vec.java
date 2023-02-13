@@ -5,9 +5,9 @@ package org.openjfx;
  * Used the raytracer tutorial from https://raytracing.github.io/books/RayTracingInOneWeekend.html
  */
 public class Vec {
-    private double x;
-    private double y;
-    private double z;
+    final private double x;
+    final private double y;
+    final private double z;
     
     
     public Vec(double x, double y, double z) {
@@ -43,35 +43,39 @@ public class Vec {
     }
     
     public Vec add(Vec v) {
-        this.x += v.x();
-        this.y += v.y();
-        this.z += v.z();
-        return this;
+        return new Vec(
+          this.x + v.x(),
+          this.y + v.y(),
+          this.z + v.z()
+        );
     }
     public Vec sub(Vec v) {
-        this.x -= v.x();
-        this.y -= v.y();
-        this.z -= v.z();
-        return this;
+        return new Vec(
+          this.x - v.x(),
+          this.y - v.y(),
+          this.z - v.z()
+        );
     }
     public Vec mult(double t) {
-        this.x *= t;
-        this.y *= t;
-        this.z *= t;
-        return this;
+        return new Vec(
+          this.x * t,
+          this.y * t,
+          this.z * t
+        );
     }
     public Vec div(double t) {
-        this.x /= t;
-        this.y /= t;
-        this.z /= t;
-        return this;
+        return new Vec(
+          this.x / t,
+          this.y / t,
+          this.z / t
+        );
     }
     
-    public double length_squared() {
+    public double lengthSquared() {
         return (this.x*this.x + this.y*this.y + this.z*this.z);
     }
     public double length() {
-        return Math.sqrt(this.length_squared());
+        return Math.sqrt(this.lengthSquared());
     }
     
     @Override

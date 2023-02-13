@@ -18,8 +18,6 @@ public class Ray {
     }
     
     public Vec at(double t) {
-        this.direction.mult(t);
-        return this.origin.add(this.direction.mult(t));
-        
+        return Vec.add(this.origin, Vec.mult(this.direction, t));
     }
 }
