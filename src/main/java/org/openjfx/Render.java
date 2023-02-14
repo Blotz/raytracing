@@ -1,5 +1,6 @@
 package org.openjfx;
 
+import javafx.scene.Camera;
 import javafx.scene.image.PixelWriter;
 
 public class Render {
@@ -7,7 +8,8 @@ public class Render {
     public static final double viwportHeight = 2.0f;
     public static final double viewportWidth = App.aspectRatio * viwportHeight;
     public static final double focalLength = 1.0f;
-    public static final Vec origin = new Vec(0f, 0f, 0f);
+    public static Vec origin = new Vec(0f, 0f, 0f); // Camera position
+    public static Vec rotation = new Vec(-0.5f, 0f, 0f); // Camera rotation
     public static final Vec horizontal = new Vec(viewportWidth, 0f, 0f);
     public static final Vec vertical = new Vec(0f, viwportHeight, 0f);
     
@@ -16,7 +18,7 @@ public class Render {
                                                     .sub(new Vec(0f, 0f, focalLength));
     
     // World
-    private static HittableList world = new HittableList()
+    public static HittableList world = new HittableList()
       .add(new Sphere(new Vec(0,0,-4), 0.5))
       .add(new Sphere(new Vec(0,-100.5,-1), 100))
       .add(new Sphere(new Vec(0,0,-1), 0.05));
@@ -46,6 +48,7 @@ public class Render {
                                       .add(Vec.mult(horizontal, u))
                                       .add(Vec.mult(vertical, v))
                                       .sub(origin);
+                direction = rotate(direction);
                 
                 Ray r = new Ray(origin, direction);
                 
@@ -55,10 +58,50 @@ public class Render {
                 // Write that color to the pixel
                 // System.out.print(String.format("(%d, %d)", i, j));
                 pixelWriter.setArgb(i, App.imageHeight-1 - j, Vec.writeColor(pixel_color));
-                
             }
         }
         System.out.println(String.format("%nDone!")); // end line
+    }
+    
+    private static Vec rotate(Vec direction) {
+        // rotate pitch yaw roll
+        // https://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
+        // https://en.wikipedia.org/wiki/Euler_angles#Rotation_matrix
+        // https://en.wikipedia.org/wiki/Rotation_matrix#In_three_dimensions
+        
+        double pitch = rotation.x();
+        double yaw = rotation.y();
+        double roll = rotation.z();
+        
+        double sinPitch = Math.sin(pitch);
+        double cosPitch = Math.cos(pitch);
+        
+        double sinYaw = Math.sin(yaw);
+        double cosYaw = Math.cos(yaw);
+        
+        double sinRoll = Math.sin(roll);
+        double cosRoll = Math.cos(roll);
+        
+        double x = direction.x();
+        double y = direction.y();
+        double z = direction.z();
+        
+        // pitch
+        double x1 = x;
+        double y1 = y * cosPitch - z * sinPitch;
+        double z1 = y * sinPitch + z * cosPitch;
+        
+        // yaw
+        double x2 = x1 * cosYaw + z1 * sinYaw;
+        double y2 = y1;
+        double z2 = -x1 * sinYaw + z1 * cosYaw;
+        
+        // roll
+        double x3 = x2 * cosRoll - y2 * sinRoll;
+        double y3 = x2 * sinRoll + y2 * cosRoll;
+        double z3 = z2;
+        
+        return new Vec(x3, y3, z3);
     }
     
     static double hitSphere(Vec center, double radius, Ray r) {

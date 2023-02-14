@@ -1,5 +1,7 @@
 package org.openjfx;
 
+import java.util.Objects;
+
 public class Sphere implements Hittable {
     Vec center;
     double radius;
@@ -41,5 +43,33 @@ public class Sphere implements Hittable {
         rec.setFaceNormal(r, outwardNormal);
         
         return true;
+    }
+    
+    @Override
+    public String toString() {
+        return "Sphere{" +
+          "center=" + center +
+          ", radius=" + radius +
+          '}';
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Sphere sphere = (Sphere) o;
+        return Double.compare(sphere.radius, radius) == 0 && center.equals(sphere.center);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(center, radius);
+    }
+    
+    public void setCenter(Vec vec) {
+        this.center = vec;
+    }
+    public void setRadius(double radius) {
+        this.radius = radius;
     }
 }

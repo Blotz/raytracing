@@ -1,13 +1,15 @@
 package org.openjfx;
 
+import java.util.Objects;
+
 /**
  * Vec
  * Used the raytracer tutorial from https://raytracing.github.io/books/RayTracingInOneWeekend.html
  */
 public class Vec {
-    final private double x;
-    final private double y;
-    final private double z;
+    private double x;
+    private double y;
+    private double z;
     
     
     public Vec(double x, double y, double z) {
@@ -121,4 +123,17 @@ public class Vec {
         return (255 << 24) | ((int)(255.999 * color.x()) << 16) | ((int)(255.999 * color.y()) << 8) | (int)(255.999 * color.z());
     }
     
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vec vec = (Vec) o;
+        return Double.compare(vec.x, x) == 0 && Double.compare(vec.y, y) == 0 && Double.compare(vec.z, z) == 0;
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y, z);
+    }
 }

@@ -10,6 +10,10 @@ public class HittableList {
         return this;
     }
     
+    public ArrayList<Hittable> getObjects() {
+        return objects;
+    }
+    
     public void clear() {
         objects.clear();
     }
