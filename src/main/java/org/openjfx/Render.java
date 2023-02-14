@@ -7,7 +7,6 @@ public class Render {
     public static final double viwportHeight = 2.0f;
     public static final double viewportWidth = App.aspectRatio * viwportHeight;
     public static final double focalLength = 1.0f;
-    
     public static final Vec origin = new Vec(0f, 0f, 0f);
     public static final Vec horizontal = new Vec(viewportWidth, 0f, 0f);
     public static final Vec vertical = new Vec(0f, viwportHeight, 0f);
@@ -15,6 +14,15 @@ public class Render {
     public static final Vec lowerLeftCorner = origin.sub(Vec.div(horizontal, 2f))
                                                     .sub(Vec.div(vertical, 2f))
                                                     .sub(new Vec(0f, 0f, focalLength));
+    
+    // World
+    private static HittableList world = new HittableList()
+      .add(new Sphere(new Vec(0,0,-4), 0.5))
+      .add(new Sphere(new Vec(0,-100.5,-1), 100))
+      .add(new Sphere(new Vec(0,0,-1), 0.05));
+    
+    public static final double infinity = Double.POSITIVE_INFINITY;
+    public static final double pi = Math.PI;
     
     /**
      * Render the image
@@ -42,7 +50,7 @@ public class Render {
                 Ray r = new Ray(origin, direction);
                 
                 // Calculate the color of the pixel based on the ray
-                Vec pixel_color = rayColor(r);
+                Vec pixel_color = rayColor(r, world);
                 
                 // Write that color to the pixel
                 // System.out.print(String.format("(%d, %d)", i, j));
@@ -55,7 +63,6 @@ public class Render {
     
     static double hitSphere(Vec center, double radius, Ray r) {
          Vec oc = Vec.sub(r.origin(), center); // oc = A - C // not sure why this doesnt work :P
-//        Vec oc = Vec.sub(center, r.origin()); // oc = A - C
         
         double a = r.direction().lengthSquared();      // a = B.B
         double halfB = Vec.dot(oc, r.direction());     // halfB = 2 * B.(A-C)
@@ -74,29 +81,23 @@ public class Render {
      * @param r Ray
      * @return Color of the pixel
      */
-    static Vec rayColor(Ray r) {
-        double t = hitSphere(new Vec(0f, 0f, -1f), 0.5f, r);
-        
-        if (t > 0.0) {
-            // System.out.print("#");
-            Vec N = Vec.unitVector(
-              Vec.sub(r.at(t), new Vec(0f, 0f, -1f))
-            );
-            return new Vec(
-              N.x()+1f,
-              N.y()+1f,
-              N.z()+1f
-            ).mult(0.5f);
-            
+    static Vec rayColor(Ray r, HittableList world) {
+        // double t = hitSphere(new Vec(0f, 0f, -1f), 0.5f, r);
+        HitRecord rec = new HitRecord();
+        if (world.hit(r, 0, infinity, rec)) {
+            return Vec.add(rec.normal, new Vec(1,1,1)).mult(0.5);
         }
         
         Vec unit_direction = Vec.unitVector(r.direction());
-        t = 0.5*(unit_direction.y() + 1.0);
+        double t = 0.5*(unit_direction.y() + 1.0);
+        
         return Vec.add(
           new Vec(1.0, 1.0, 1.0).mult(1.0-t),
           new Vec(0.5, 0.7, 1.0).mult(t)
         );
     }
     
-
+    public static double degreesToRadians(double degrees) {
+        return degrees * pi / 180f;
+    }
 }
