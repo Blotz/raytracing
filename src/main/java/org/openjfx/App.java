@@ -242,8 +242,13 @@ public class App extends Application {
             errorMessage(String.format(doubleValueError, "Camara roll"));
         }
         
-        Render.origin = new Vec(xPos, yPos, zPos);
-        Render.rotation = new Vec(pitch, yaw, roll);
+        // convert to radians
+        pitch = Math.toRadians(pitch);
+        yaw   = Math.toRadians(yaw);
+        roll  = Math.toRadians(roll);
+        
+        Camera.position = new Vec(xPos, yPos, zPos);
+        Camera.rotation = new Vec(pitch, yaw, roll);
         
         // System.out.println(xPos);
         // System.out.println(yPos);
