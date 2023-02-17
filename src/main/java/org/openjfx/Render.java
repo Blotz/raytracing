@@ -3,8 +3,9 @@ package org.openjfx;
 import javafx.scene.image.PixelWriter;
 
 public class Render {
-    public static Vec origin = new Vec(0f, 0f, 0f);
     
+    public static Vec origin = new Vec(0f, 0f, 0f);
+    public static final int samplesPerPixel = 10;
     // World
     public static HittableList world = new HittableList()
       .add(new Sphere(new Vec(0,0,-4), 0.5))
@@ -26,41 +27,30 @@ public class Render {
             // System.out.println();
             System.out.print(String.format("\rScanlines remaining: %d ", j));
             for (int i=0; i< App.imageWidth; ++i) {
-                // u and v are the offset from the center of the viewport
-                // Camara is at (0,0,0) and the viewport is centered at (0,0,1)
-                // u and v are floats between 0 and 1 and represent the percentage of the viewport
-                double u = (double) i / (App.imageWidth-1);
-                double v = (double) j / (App.imageHeight-1);
+                Vec pixelColor = new Vec(0,0,0);
+                for (int s=0; s<samplesPerPixel; ++s) {
+                    // u and v are the offset from the center of the viewport
+                    // Camara is at (0,0,0) and the viewport is centered at (0,0,1)
+                    // u and v are floats between 0 and 1 and represent the percentage of the viewport
+                    double u = ((double) i + Math.random()) / (App.imageWidth-1);
+                    double v = ((double) j + Math.random()) / (App.imageHeight-1);
+    
+                    // ray from the camera to the pixel
+                    Ray r = camera.getRay(u, v);
+                    // Calculate the color of the pixel based on the ray
+                    pixelColor = pixelColor.add(rayColor(r, world));
+                    
+                }
                 
-                // ray from the camera to the pixel
-                Ray r = camera.getRay(u, v);
-                // Calculate the color of the pixel based on the ray
-                Vec pixel_color = rayColor(r, world);
                 
                 // Write that color to the pixel
                 // System.out.print(String.format("(%d, %d)", i, j));
-                pixelWriter.setArgb(i, App.imageHeight-1 - j, Vec.writeColor(pixel_color));
+                pixelWriter.setArgb(i, App.imageHeight-1 - j, Vec.writeColor(pixelColor, samplesPerPixel));
             }
         }
         System.out.println(String.format("%nDone!")); // end line
     }
     
-    
-    
-    static double hitSphere(Vec center, double radius, Ray r) {
-         Vec oc = Vec.sub(r.origin(), center); // oc = A - C // not sure why this doesnt work :P
-        
-        double a = r.direction().lengthSquared();      // a = B.B
-        double halfB = Vec.dot(oc, r.direction());     // halfB = 2 * B.(A-C)
-        double c = oc.lengthSquared() - radius*radius; // c = (A-C).(A-C) - r^2
-        double discriminant = halfB*halfB - a*c;       // discriminant = b^2 - 4ac
-        
-        if (discriminant < 0) {
-            return -1.0;
-        } else {
-            return (-halfB - Math.sqrt(discriminant)) / a;
-        }
-    }
     
     /**
      * Calculate the color of the pixel based on the ray
@@ -83,7 +73,20 @@ public class Render {
         );
     }
     
-    public static double degreesToRadians(double degrees) {
-        return degrees * pi / 180f;
+    /**
+     * Clamp a value between a min and max
+     * @param x The value to clamp
+     * @param min The minimum value x can be
+     * @param max The maximum value x can be
+     * @return The clamped value
+     */
+    public static double clamp(double x, double min, double max) {
+        if (x < min) {
+            return min;
+        }
+        if (x > max) {
+            return max;
+        }
+        return x;
     }
 }

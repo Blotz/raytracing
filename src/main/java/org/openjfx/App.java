@@ -247,8 +247,8 @@ public class App extends Application {
         yaw   = Math.toRadians(yaw);
         roll  = Math.toRadians(roll);
         
-        Camera.position = new Vec(xPos, yPos, zPos);
-        Camera.rotation = new Vec(pitch, yaw, roll);
+        Camera.setPosition(new Vec(xPos, yPos, zPos));
+        Camera.setRotation(new Vec(pitch, yaw, roll));
         
         // System.out.println(xPos);
         // System.out.println(yPos);
@@ -292,6 +292,11 @@ public class App extends Application {
         r = this.rValue.getValue();
         g = this.gValue.getValue();
         b = this.bValue.getValue();
+        
+        // Convert to absorbion
+        r = 1 - (r / 255);
+        g = 1 - (g / 255);
+        b = 1 - (b / 255);
         
         sphere.setCenter(new Vec(xPos, yPos, zPos));
         sphere.setRadius(radius);

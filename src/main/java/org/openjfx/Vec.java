@@ -27,18 +27,6 @@ public class Vec {
     public double z() {
         return this.z;
     }
-    public double get (int i) {
-        switch (i) {
-            case 0:
-                return this.x;
-            case 1:
-                return this.y;
-            case 2:
-                return this.z;
-            default:
-                throw new IllegalArgumentException("Index must be 0, 1, or 2");
-        }
-    }
     
     public Vec neg() {
         return new Vec(-this.x, -this.y, -this.z);
@@ -118,12 +106,33 @@ public class Vec {
         return Vec.div(v, v.length());
     }
     
-    public static int writeColor(Vec color) {
+    public static int writeColor(Vec color, int samplesPerPixel) {
+        double r = color.x();
+        double g = color.y();
+        double b = color.z();
+        
+        double scale = 1.0 / samplesPerPixel;
+        r = Math.sqrt(scale * r);
+        g = Math.sqrt(scale * g);
+        b = Math.sqrt(scale * b);
+        
         // bit shift right to argb format
-        return (255 << 24) | ((int)(255.999 * color.x()) << 16) | ((int)(255.999 * color.y()) << 8) | (int)(255.999 * color.z());
+        return (255 << 24) | ((int)(255.999 * r) << 16) | ((int)(255.999 * g) << 8) | (int)(255.999 * b);
     }
     
     
+    public static double randomDouble() {
+        return Math.random();
+    }
+    public static double randomDouble(double min, double max) {
+        return Math.random() * (max - min) + min;
+    }
+    public static Vec random() {
+        return new Vec(Math.random(), Math.random(), Math.random());
+    }
+    public static Vec random(double min, double max) {
+        return new Vec(Math.random() * (max - min) + min, Math.random() * (max - min) + min, Math.random() * (max - min) + min);
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -131,7 +140,6 @@ public class Vec {
         Vec vec = (Vec) o;
         return Double.compare(vec.x, x) == 0 && Double.compare(vec.y, y) == 0 && Double.compare(vec.z, z) == 0;
     }
-    
     @Override
     public int hashCode() {
         return Objects.hash(x, y, z);

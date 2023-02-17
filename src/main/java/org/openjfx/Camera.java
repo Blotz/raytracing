@@ -1,42 +1,73 @@
 package org.openjfx;
 
 public class Camera {
-    public static final double viwportHeight = 2.0f;
-    public static final double viewportWidth = App.aspectRatio * viwportHeight;
-    public static final double focalLength = 1.0f;
-    public static final Vec horizontal = new Vec(viewportWidth, 0f, 0f);
-    public static final Vec vertical = new Vec(0f, viwportHeight, 0f);
-    public static final Vec lowerLeftCorner = Render.origin.sub(Vec.div(horizontal, 2f))
-      .sub(Vec.div(vertical, 2f))
-      .sub(new Vec(0f, 0f, focalLength));
+    private static final double viwportHeight = 2.0f;
+    private static final double viewportWidth = App.aspectRatio * viwportHeight;
+    private static final double focalLength = 1.0f;
+    private Vec horizontal;
+    private Vec vertical;
+    private Vec lowerLeftCorner;
     
-    public static Vec rotation = new Vec(-0.5f, 0f, 0f); // Camera rotation
-    public static Vec position = new Vec(0f, 0f, 0f); // Camera position1
+    private static Vec position = new Vec(0, 0, 0);
+    private static Vec rotation = new Vec(0, 0, 0);
     
     public Camera() {
+        // Calculate the viewport
+        horizontal = new Vec(viewportWidth, 0, 0);
+        vertical = new Vec(0, viwportHeight, 0);
+        lowerLeftCorner = Render.origin
+          .sub(horizontal.mult(0.5))
+          .sub(vertical.mult(0.5))
+          .sub(new Vec(0, 0, focalLength));
+    
+        // Rotate the viewport
+        horizontal      = rotate(rotation, horizontal);
+        vertical        = rotate(rotation, vertical);
+        lowerLeftCorner = rotate(rotation, lowerLeftCorner);
     }
     
+    public static void setPosition(Vec position) {
+        Camera.position = position;
+    }
+    
+    public static void setRotation(Vec rotation) {
+         Camera.rotation = rotation;
+    }
+    
+    /**
+     * Get a ray from the camera to the pixel
+     * @param u offset from the center of the viewport
+     * @param v offset from the center of the viewport
+     * @return Ray from the camera to the pixel
+     */
     public Ray getRay(double u, double v) {
         // u and v are the offset from the center of the viewport
         // Camara is at (0,0,0) and the viewport is centered at (0,0,1)
         // u and v are floats between 0 and 1 and represent the percentage of the viewport
-        Vec direction = Camera.position.add(lowerLeftCorner)
+        Vec direction = position.add(lowerLeftCorner)
           .add(Vec.mult(horizontal, u))
           .add(Vec.mult(vertical, v))
-          .sub(Camera.position);
+          .sub(position);
         
-        direction = rotate(direction);
-        return new Ray(Camera.position, direction);
+        // direction = rotate(direction);
+        return new Ray(position, direction);
     }
-    private static Vec rotate(Vec direction) {
+    
+    /**
+     * Rotate a vector
+     * @param rotation pitch yaw roll
+     * @param direction vector to rotate
+     * @return
+     */
+    private static Vec rotate(Vec rotation, Vec direction) {
         // rotate pitch yaw roll
         // https://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
         // https://en.wikipedia.org/wiki/Euler_angles#Rotation_matrix
         // https://en.wikipedia.org/wiki/Rotation_matrix#In_three_dimensions
         
-        double pitch = Camera.rotation.x();
-        double yaw = Camera.rotation.y();
-        double roll = Camera.rotation.z();
+        double pitch = rotation.x();
+        double yaw   = rotation.y();
+        double roll  = rotation.z();
         
         double sinPitch = Math.sin(pitch);
         double cosPitch = Math.cos(pitch);
@@ -68,4 +99,5 @@ public class Camera {
         
         return new Vec(x3, y3, z3);
     }
+    
 }
