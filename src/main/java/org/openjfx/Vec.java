@@ -141,6 +141,15 @@ public class Vec {
         }
     }
     
+    public static Vec randomInHemisphere(Vec normal) {
+        Vec inUnitSphere = Vec.randomInUnitSphere();
+        if (Vec.dot(inUnitSphere, normal) > 0.0) {
+            return inUnitSphere;
+        } else {
+            return inUnitSphere.neg();
+        }
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

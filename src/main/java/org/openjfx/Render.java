@@ -2,7 +2,7 @@ package org.openjfx;
 
 import javafx.scene.image.PixelWriter;
 
-public class Render {
+public class Render implements Runnable {
     
     public static Vec origin = new Vec(0f, 0f, 0f);
     public static final int samplesPerPixel = 100;
@@ -10,8 +10,8 @@ public class Render {
     // World
     public static HittableList world = new HittableList()
       .add(new Sphere(new Vec(0,0,-4), 0.5))
-      .add(new Sphere(new Vec(0,-100.5,-1), 100))
-      .add(new Sphere(new Vec(0,0,-1), 0.05));
+      .add(new Sphere(new Vec(0,-100.5,-1), 100));
+//      .add(new Sphere(new Vec(0,0,-1), 0.05));
     
     public static final double infinity = Double.POSITIVE_INFINITY;
     public static final double pi = Math.PI;
@@ -28,7 +28,7 @@ public class Render {
             // System.out.println();
             System.out.print(String.format("\rScanlines remaining: %d ", j));
             for (int i=0; i< App.imageWidth; ++i) {
-                Vec pixelColor = new Vec(0,0,0);
+                Vec pixelColor = new Vec(0,0,0); // color of the pixel
                 for (int s=0; s<samplesPerPixel; ++s) {
                     // u and v are the offset from the center of the viewport
                     // Camara is at (0,0,0) and the viewport is centered at (0,0,1)
@@ -66,6 +66,7 @@ public class Render {
         HitRecord rec = new HitRecord();
         if (world.hit(r, 0.001, infinity, rec)) {
             Vec target = Vec.randomInUnitSphere().add(rec.normal).add(rec.p);
+            // Vec target = Vec.randomInHemisphere(rec.normal).add(rec.p);
             // return Vec.add(rec.normal, new Vec(1,1,1)).mult(0.5);
             return rayColor(
               new Ray(rec.p, Vec.sub(target, rec.p)),
@@ -98,5 +99,9 @@ public class Render {
             return max;
         }
         return x;
+    }
+    
+    public void run() {
+        System.out.println("Render thread started");
     }
 }
