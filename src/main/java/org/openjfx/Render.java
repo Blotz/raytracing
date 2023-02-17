@@ -5,8 +5,8 @@ import javafx.scene.image.PixelWriter;
 public class Render implements Runnable {
     
     public static Vec origin = new Vec(0f, 0f, 0f);
-    public static final int samplesPerPixel = 100;
-    public static final int maxDepth = 50;
+    public static int samplesPerPixel = 100;
+    public static int maxDepth = 50;
     // World
     public static HittableList world = new HittableList()
       .add(new Sphere(new Vec(0,0,-4), 0.5))

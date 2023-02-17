@@ -1,5 +1,8 @@
 package org.openjfx;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.Observable;
@@ -10,15 +13,12 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
+import javafx.scene.image.*;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import javafx.scene.Scene;
 import javafx.scene.Parent;
-import javafx.scene.image.ImageView;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -34,6 +34,7 @@ public class App extends Application {
     public static final  double aspectRatio = 16.0 / 9.0;
     public static final int imageWidth = 1000;
     public static final int imageHeight = (int) (imageWidth / aspectRatio);
+    public static final boolean isAnimated = false;
 
     // Background
     @FXML
@@ -99,8 +100,17 @@ public class App extends Application {
     @FXML
     public void renderOnEnter(KeyEvent event) {
         if (event.getCode().toString().equals("ENTER")) {
+            Render.samplesPerPixel = 5;
+            Render.maxDepth = 3;
             render();
         }
+    }
+    
+    @FXML
+    public void renderOnButton(ActionEvent event) {
+        Render.samplesPerPixel = 100;
+        Render.maxDepth = 50;
+        render();
     }
 
     @FXML
@@ -114,32 +124,53 @@ public class App extends Application {
             showErrorMessage();
             return;
         }
+        Parent root = imageView.getParent();
+        root.setDisable(true);
         
         // System.out.println("Starting main render loop...");
         // generate a writable image
         WritableImage rwimage = new WritableImage(imageWidth, imageHeight);
         PixelWriter pixelWriter = rwimage.getPixelWriter();
         
+        PixelReader pixelReader = rwimage.getPixelReader();
+        int[] pixelData = new int[imageWidth * imageHeight];
+        WritableImage copyImage = new WritableImage(imageWidth, imageHeight);
+        PixelWriter copyPixelWriter = copyImage.getPixelWriter();
+    
         // set image to ImageView
         imageView.setImage(rwimage);
         imageView.setFitWidth(imageWidth);
         imageView.setFitHeight(imageHeight);
         
-        // get root
-        Parent root = imageView.getParent();
-        root.setDisable(true);
-        
-        // call render function
+        Timeline timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(50), new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                updateImage(pixelReader, pixelData, copyPixelWriter, copyImage);
+            }
+        }));
+        timeline.setCycleCount(Animation.INDEFINITE);
+    
         Thread thread = new Thread(() -> {
             Render.render(pixelWriter);
-            Platform.runLater(() -> {
-                root.setDisable(false);
-                imageView.setImage(rwimage);
-            });
+            timeline.stop();
+            root.setDisable(false);
         });
         
+        timeline.play();
         thread.start();
+    }
     
+    /**
+     * Updates the image
+     * @param pixelReader The target image reader
+     * @param pixelData A temporary array to store the pixel data
+     * @param pixelWriter The target image writer
+     * @param rwimage The target image
+     */
+    private void updateImage(PixelReader pixelReader, int[] pixelData, PixelWriter pixelWriter, WritableImage rwimage) {
+        pixelReader.getPixels(0, 0, imageWidth, imageHeight, PixelFormat.getIntArgbInstance(), pixelData, 0, imageWidth);
+        pixelWriter.setPixels(0, 0, imageWidth, imageHeight, PixelFormat.getIntArgbInstance(), pixelData, 0, imageWidth);
+        imageView.setImage(rwimage);
     }
     
     @FXML
