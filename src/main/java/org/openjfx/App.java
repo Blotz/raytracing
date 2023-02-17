@@ -1,6 +1,7 @@
 package org.openjfx;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
@@ -31,7 +32,7 @@ import java.util.ArrayList;
 public class App extends Application {
     // image
     public static final  double aspectRatio = 16.0 / 9.0;
-    public static final int imageWidth = 1920;
+    public static final int imageWidth = 1000;
     public static final int imageHeight = (int) (imageWidth / aspectRatio);
 
     // Background
@@ -118,12 +119,27 @@ public class App extends Application {
         // generate a writable image
         WritableImage rwimage = new WritableImage(imageWidth, imageHeight);
         PixelWriter pixelWriter = rwimage.getPixelWriter();
-        // call render function
-        Render.render(pixelWriter);
+        
         // set image to ImageView
         imageView.setImage(rwimage);
         imageView.setFitWidth(imageWidth);
         imageView.setFitHeight(imageHeight);
+        
+        // get root
+        Parent root = imageView.getParent();
+        root.setDisable(true);
+        
+        // call render function
+        Thread thread = new Thread(() -> {
+            Render.render(pixelWriter);
+            Platform.runLater(() -> {
+                root.setDisable(false);
+                imageView.setImage(rwimage);
+            });
+        });
+        
+        thread.start();
+    
     }
     
     @FXML
