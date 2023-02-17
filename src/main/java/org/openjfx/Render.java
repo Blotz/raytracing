@@ -5,7 +5,8 @@ import javafx.scene.image.PixelWriter;
 public class Render {
     
     public static Vec origin = new Vec(0f, 0f, 0f);
-    public static final int samplesPerPixel = 10;
+    public static final int samplesPerPixel = 100;
+    public static final int maxDepth = 50;
     // World
     public static HittableList world = new HittableList()
       .add(new Sphere(new Vec(0,0,-4), 0.5))
@@ -38,7 +39,7 @@ public class Render {
                     // ray from the camera to the pixel
                     Ray r = camera.getRay(u, v);
                     // Calculate the color of the pixel based on the ray
-                    pixelColor = pixelColor.add(rayColor(r, world));
+                    pixelColor = pixelColor.add(rayColor(r, world, maxDepth));
                     
                 }
                 
@@ -57,11 +58,20 @@ public class Render {
      * @param r Ray
      * @return Color of the pixel
      */
-    static Vec rayColor(Ray r, HittableList world) {
+    static Vec rayColor(Ray r, HittableList world, int depth) {
+        if (depth <= 0) {
+            return new Vec(0,0,0);
+        }
         // double t = hitSphere(new Vec(0f, 0f, -1f), 0.5f, r);
         HitRecord rec = new HitRecord();
-        if (world.hit(r, 0, infinity, rec)) {
-            return Vec.add(rec.normal, new Vec(1,1,1)).mult(0.5);
+        if (world.hit(r, 0.001, infinity, rec)) {
+            Vec target = Vec.randomInUnitSphere().add(rec.normal).add(rec.p);
+            // return Vec.add(rec.normal, new Vec(1,1,1)).mult(0.5);
+            return rayColor(
+              new Ray(rec.p, Vec.sub(target, rec.p)),
+              world,
+              depth-1
+            ).mult(0.5);
         }
         
         Vec unit_direction = Vec.unitVector(r.direction());

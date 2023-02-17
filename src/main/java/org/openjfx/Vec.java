@@ -133,6 +133,14 @@ public class Vec {
     public static Vec random(double min, double max) {
         return new Vec(Math.random() * (max - min) + min, Math.random() * (max - min) + min, Math.random() * (max - min) + min);
     }
+    public static Vec randomInUnitSphere() {
+        while (true) {
+            Vec p = Vec.random(-1, 1);
+            if (p.lengthSquared() >= 1) continue;
+            return p;
+        }
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
