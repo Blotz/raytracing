@@ -142,7 +142,7 @@ public class App extends Application {
         imageView.setFitWidth(imageWidth);
         imageView.setFitHeight(imageHeight);
         
-        Timeline timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(50), new EventHandler<ActionEvent>() {
+        Timeline timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(100), new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 updateImage(pixelReader, pixelData, copyPixelWriter, copyImage);
@@ -155,9 +155,9 @@ public class App extends Application {
             timeline.stop();
             root.setDisable(false);
         });
-        
-        timeline.play();
+        updateImage(pixelReader, pixelData, copyPixelWriter, copyImage);
         thread.start();
+        timeline.play();
     }
     
     /**
