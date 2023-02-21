@@ -130,9 +130,7 @@ public class App extends Application {
         // System.out.println("Starting main render loop...");
         // generate a writable image
         WritableImage rwimage = new WritableImage(imageWidth, imageHeight);
-        PixelWriter pixelWriter = rwimage.getPixelWriter();
         
-        PixelReader pixelReader = rwimage.getPixelReader();
         int[] pixelData = new int[imageWidth * imageHeight];
         WritableImage copyImage = new WritableImage(imageWidth, imageHeight);
         PixelWriter copyPixelWriter = copyImage.getPixelWriter();
@@ -145,30 +143,29 @@ public class App extends Application {
         Timeline timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(100), new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                updateImage(pixelReader, pixelData, copyPixelWriter, copyImage);
+                updateImage(pixelData, copyPixelWriter, copyImage);
             }
         }));
         timeline.setCycleCount(Animation.INDEFINITE);
     
         Thread thread = new Thread(() -> {
-            Render.render(pixelWriter);
+            Render.render(pixelData);
             timeline.stop();
+            updateImage(pixelData, copyPixelWriter, copyImage);
             root.setDisable(false);
         });
-        updateImage(pixelReader, pixelData, copyPixelWriter, copyImage);
+        updateImage(pixelData, copyPixelWriter, copyImage);
         thread.start();
         timeline.play();
     }
     
     /**
      * Updates the image
-     * @param pixelReader The target image reader
      * @param pixelData A temporary array to store the pixel data
      * @param pixelWriter The target image writer
      * @param rwimage The target image
      */
-    private void updateImage(PixelReader pixelReader, int[] pixelData, PixelWriter pixelWriter, WritableImage rwimage) {
-        pixelReader.getPixels(0, 0, imageWidth, imageHeight, PixelFormat.getIntArgbInstance(), pixelData, 0, imageWidth);
+    private void updateImage(int[] pixelData, PixelWriter pixelWriter, WritableImage rwimage) {
         pixelWriter.setPixels(0, 0, imageWidth, imageHeight, PixelFormat.getIntArgbInstance(), pixelData, 0, imageWidth);
         imageView.setImage(rwimage);
     }

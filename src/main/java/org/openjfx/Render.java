@@ -30,7 +30,7 @@ public class Render implements Runnable {
      * Render the image
      * @param pixelWriter Image to render
      */
-    public static void render(PixelWriter pixelWriter) {
+    public static void render(int[] pixelData) {
         Camera camera = new Camera();
         
         // Generating all the ray casts for the image. one per pixel atm!
@@ -56,7 +56,8 @@ public class Render implements Runnable {
                 
                 // Write that color to the pixel
                 // System.out.print(String.format("(%d, %d)", i, j));
-                pixelWriter.setArgb(i, App.imageHeight-1 - j, Vec.writeColor(pixelColor, samplesPerPixel));
+                // pixelWriter.setArgb(i, App.imageHeight-1 - j, Vec.writeColor(pixelColor, samplesPerPixel));
+                pixelData[i + (App.imageHeight-1 - j) * App.imageWidth] = Vec.writeColor(pixelColor, samplesPerPixel);
             }
         }
         System.out.println(String.format("%nDone!")); // end line
