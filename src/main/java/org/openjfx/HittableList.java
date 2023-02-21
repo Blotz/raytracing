@@ -32,6 +32,7 @@ public class HittableList {
                 rec.p = tempRec.p;
                 rec.normal = tempRec.normal;
                 rec.frontFace = tempRec.frontFace;
+                rec.material = tempRec.material;
             }
         }
         

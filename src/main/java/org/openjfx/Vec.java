@@ -150,6 +150,21 @@ public class Vec {
         }
     }
     
+    public static Vec randomUnitVector() {
+        return Vec.unitVector(Vec.randomInUnitSphere());
+    }
+    
+    public boolean nearZero() {
+        double s = 1e-8;
+        return (Math.abs(this.x) < s) && (Math.abs(this.y) < s) && (Math.abs(this.z) < s);
+    }
+    
+    public void set(Vec v) {
+        this.x = v.x();
+        this.y = v.y();
+        this.z = v.z();
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

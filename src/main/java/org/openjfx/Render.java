@@ -9,8 +9,18 @@ public class Render implements Runnable {
     public static int maxDepth = 50;
     // World
     public static HittableList world = new HittableList()
-      .add(new Sphere(new Vec(0,0,-4), 0.5))
-      .add(new Sphere(new Vec(0,-100.5,-1), 100));
+      .add(
+        new Sphere(
+          new Vec(
+            0,0,-4),
+          0.5,
+          new Lambertian(new Vec(0.1, 0.2, 0.5))
+          ))
+      .add(
+        new Sphere(
+          new Vec(0,-100.5,-1),
+          100,
+          new Lambertian(new Vec(0.8, 0.8, 0.0))));
 //      .add(new Sphere(new Vec(0,0,-1), 0.05));
     
     public static final double infinity = Double.POSITIVE_INFINITY;
@@ -65,14 +75,13 @@ public class Render implements Runnable {
         // double t = hitSphere(new Vec(0f, 0f, -1f), 0.5f, r);
         HitRecord rec = new HitRecord();
         if (world.hit(r, 0.001, infinity, rec)) {
-            Vec target = Vec.randomInUnitSphere().add(rec.normal).add(rec.p);
-            // Vec target = Vec.randomInHemisphere(rec.normal).add(rec.p);
-            // return Vec.add(rec.normal, new Vec(1,1,1)).mult(0.5);
-            return rayColor(
-              new Ray(rec.p, Vec.sub(target, rec.p)),
-              world,
-              depth-1
-            ).mult(0.5);
+            Ray scattered = new Ray(new Vec(0,0,0), new Vec(0,0,0));
+            Vec attenuation = new Vec(0,0,0);
+            
+            if (rec.material.scatter(r, rec, attenuation, scattered)) {
+                return Vec.mult(attenuation, rayColor(scattered, world, depth-1));
+            }
+            return new Vec(0,0,0);
         }
         
         Vec unit_direction = Vec.unitVector(r.direction());

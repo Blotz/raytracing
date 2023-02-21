@@ -5,10 +5,12 @@ import java.util.Objects;
 public class Sphere implements Hittable {
     Vec center;
     double radius;
+    Material material;
     
-    public Sphere(Vec center, double radius) {
+    public Sphere(Vec center, double radius, Material material) {
         this.center = center;
         this.radius = radius;
+        this.material = material;
     }
     
     @Override
@@ -41,6 +43,7 @@ public class Sphere implements Hittable {
         rec.p = r.at(rec.t);
         Vec outwardNormal = Vec.sub(rec.p, center).div(radius);
         rec.setFaceNormal(r, outwardNormal);
+        rec.material = material;
         
         return true;
     }

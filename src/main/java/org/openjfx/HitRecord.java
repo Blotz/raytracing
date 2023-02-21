@@ -5,6 +5,7 @@ public class HitRecord {
     public Vec normal;  // normal at point of intersection
     public double t;  // parameter of ray at point of intersection
     public boolean frontFace;  // is the normal pointing outward?
+    public Material material;
     
     public void setFaceNormal(Ray r, Vec outwardNormal) {
         frontFace = Vec.dot(r.direction(), outwardNormal) < 0;
