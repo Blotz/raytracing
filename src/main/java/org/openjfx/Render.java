@@ -1,7 +1,5 @@
 package org.openjfx;
 
-import javafx.scene.image.PixelWriter;
-
 public class Render implements Runnable {
     
     public static Vec origin = new Vec(0f, 0f, 0f);
@@ -28,7 +26,7 @@ public class Render implements Runnable {
     
     /**
      * Render the image
-     * @param pixelWriter Image to render
+     * @param pixelData Image to render
      */
     public static void render(int[] pixelData) {
         Camera camera = new Camera();

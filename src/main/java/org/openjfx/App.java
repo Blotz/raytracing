@@ -4,9 +4,6 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.beans.Observable;
-import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -34,7 +31,6 @@ public class App extends Application {
     public static final  double aspectRatio = 16.0 / 9.0;
     public static final int imageWidth = 1000;
     public static final int imageHeight = (int) (imageWidth / aspectRatio);
-    public static final boolean isAnimated = false;
 
     // Background
     @FXML
