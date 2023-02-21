@@ -31,8 +31,34 @@ public class App extends Application {
     public static final  double aspectRatio = 16.0 / 9.0;
     public static final int imageWidth = 1000;
     public static final int imageHeight = (int) (imageWidth / aspectRatio);
+    
+    // Render
+    public static Vec origin = new Vec(0f, 0f, 0f);
+    public static int samplesPerPixel = 100;
+    public static int maxDepth = 50;
+    
+    // Camara
+    private static Vec camPosition = new Vec(0, 0, 0);
+    private static Vec camRotation = new Vec(0, 0, 0);
+    
+    // World
+    public static HittableList world = new HittableList();
+    static {
+        Sphere s1 = new Sphere(
+            new Vec(0,0,-4),
+            0.5,
+            new Lambertian(new Vec(0.1, 0.2, 0.5))
+        );
+        Sphere s2 = new Sphere(
+            new Vec(0,-100.5,-1),
+            100,
+            new Lambertian(new Vec(0.8, 0.8, 0.0))
+        );
+        world.add(s1);
+        world.add(s2);
+    }
 
-    // Background
+    // GUI
     @FXML
     private ImageView imageView;
     
@@ -71,7 +97,6 @@ public class App extends Application {
     private boolean hasError = false;
     private String errorMessage = new String();
     private static final String doubleValueError = new String("%s has to be a decimal number");
-    
     private Hittable objectSelected = null;
     
     @Override
@@ -96,19 +121,17 @@ public class App extends Application {
     @FXML
     public void renderOnEnter(KeyEvent event) {
         if (event.getCode().toString().equals("ENTER")) {
-            Render.samplesPerPixel = 5;
-            Render.maxDepth = 3;
+            App.samplesPerPixel = 5;
+            App.maxDepth = 3;
             render();
         }
     }
-    
     @FXML
     public void renderOnButton(ActionEvent event) {
-        Render.samplesPerPixel = 100;
-        Render.maxDepth = 50;
+        App.samplesPerPixel = 100;
+        App.maxDepth = 50;
         render();
     }
-
     @FXML
     public void render() {
         // System.out.println("Getting camara position");
@@ -143,9 +166,11 @@ public class App extends Application {
             }
         }));
         timeline.setCycleCount(Animation.INDEFINITE);
+        
+        Render render = new Render(world, camPosition, camRotation);
     
         Thread thread = new Thread(() -> {
-            Render.render(pixelData);
+            render.render(pixelData);
             timeline.stop();
             updateImage(pixelData, copyPixelWriter, copyImage);
             root.setDisable(false);
@@ -169,7 +194,7 @@ public class App extends Application {
     @FXML
     public void getSphereDropDown(Event event) {
         // Generate new list
-        ArrayList<Hittable> options = Render.world.getObjects();
+        ArrayList<Hittable> options = App.world.getObjects();
         // Create dropdown with each sphere being enumerated
         // And each option points to the sphere object
         ObservableList<Hittable> optionsList = FXCollections.observableArrayList(options);
@@ -177,9 +202,17 @@ public class App extends Application {
         sphereSelect.setItems(optionsList);
     }
     @FXML
-    public void selectSphere(ActionEvent event) {
+    public void selectSphere() {
         Hittable newObjectSelected = (Hittable) sphereSelect.getValue();
         if (newObjectSelected == null) {
+            xSphere.setText(String.format("%f", 0f));
+            ySphere.setText(String.format("%f", 0f));
+            zSphere.setText(String.format("%f", 0f));
+            rSphere.setText(String.format("%f", 0f));
+    
+            rValue.setValue(0f);
+            gValue.setValue(0f);
+            bValue.setValue(0f);
             return;
         }
         
@@ -215,6 +248,38 @@ public class App extends Application {
         
     }
     
+    @FXML
+    public void addSphere(ActionEvent event) throws IOException {
+        Sphere sphere = new Sphere(
+          new Vec(0, 0, 0),
+          0,
+          new Lambertian(new Vec(0, 0, 0))
+        );
+        App.world.add(sphere);
+        
+        // update ui
+        sphereSelect.setValue(sphere);
+        selectSphere();
+        
+    }
+    
+    @FXML
+    public void removeSphere(ActionEvent event) {
+        Hittable objectSelected = (Hittable) sphereSelect.getValue();
+        if (objectSelected == null) {
+            return;
+        }
+        
+        if (objectSelected instanceof Sphere) {
+            Sphere sphere = (Sphere) objectSelected;
+            App.world.remove(sphere);
+        }
+        
+        // update ui
+        sphereSelect.setValue(null);
+        selectSphere();
+    }
+    
     public void saveSphere() {
         Hittable objectSelected = (Hittable) sphereSelect.getValue();
         if (objectSelected == null) {
@@ -226,22 +291,9 @@ public class App extends Application {
             parseSphere(sphere);
         }
     }
-    
     public void saveCamara() {
         parseCamara();
     }
-    
-    private void showErrorMessage() {
-        Alert alert = new Alert(Alert.AlertType.ERROR, errorMessage);
-        alert.show();
-        hasError = false;
-        errorMessage = new String();
-    }
-    private void errorMessage(String message) {
-        hasError = true;
-        errorMessage += String.format("%s%n", message);
-    }
-    
     private void parseCamara() {
         double xPos = 0f;
         double yPos = 0f;
@@ -287,15 +339,8 @@ public class App extends Application {
         yaw   = Math.toRadians(yaw);
         roll  = Math.toRadians(roll);
         
-        Camera.setPosition(new Vec(xPos, yPos, zPos));
-        Camera.setRotation(new Vec(pitch, yaw, roll));
-        
-        // System.out.println(xPos);
-        // System.out.println(yPos);
-        // System.out.println(zPos);
-        // System.out.println(pitch);
-        // System.out.println(yaw);
-        // System.out.println(roll);
+        App.camPosition = new Vec(xPos, yPos, zPos);
+        App.camRotation = new Vec(pitch, yaw, roll);
     }
     private void parseSphere(Sphere sphere) {
         double xPos = 0f;
@@ -341,6 +386,17 @@ public class App extends Application {
         sphere.setCenter(new Vec(xPos, yPos, zPos));
         sphere.setRadius(radius);
         sphere.setColor(r, g, b);
+    }
+    
+    private void showErrorMessage() {
+        Alert alert = new Alert(Alert.AlertType.ERROR, errorMessage);
+        alert.show();
+        hasError = false;
+        errorMessage = new String();
+    }
+    private void errorMessage(String message) {
+        hasError = true;
+        errorMessage += String.format("%s%n", message);
     }
     
     public static void main(String[] args) {

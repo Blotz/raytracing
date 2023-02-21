@@ -64,7 +64,13 @@
             </HBox>
             <HBox>
                <children>
-                  <ComboBox fx:id="sphereSelect" onAction="#selectSphere" onShowing="#getSphereDropDown" prefWidth="150.0" promptText="Sphere" />
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <ComboBox fx:id="sphereSelect" onAction="#selectSphere" onShowing="#getSphereDropDown" prefWidth="150.0" promptText="Sphere" />
+                        <Button focusTraversable="false" mnemonicParsing="false" onAction="#addSphere" text="New sphere" />
+                        <Button focusTraversable="false" mnemonicParsing="false" onAction="#removeSphere" text="Delete sphere" />
+                     </children>
+                  </VBox>
                   <VBox prefHeight="200.0" prefWidth="100.0">
                      <children>
                         <HBox prefHeight="100.0" prefWidth="200.0">

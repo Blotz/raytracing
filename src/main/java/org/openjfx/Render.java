@@ -1,35 +1,22 @@
 package org.openjfx;
 
-public class Render implements Runnable {
-    
-    public static Vec origin = new Vec(0f, 0f, 0f);
-    public static int samplesPerPixel = 100;
-    public static int maxDepth = 50;
-    // World
-    public static HittableList world = new HittableList()
-      .add(
-        new Sphere(
-          new Vec(
-            0,0,-4),
-          0.5,
-          new Lambertian(new Vec(0.1, 0.2, 0.5))
-          ))
-      .add(
-        new Sphere(
-          new Vec(0,-100.5,-1),
-          100,
-          new Lambertian(new Vec(0.8, 0.8, 0.0))));
-//      .add(new Sphere(new Vec(0,0,-1), 0.05));
-    
+public class Render {
     public static final double infinity = Double.POSITIVE_INFINITY;
     public static final double pi = Math.PI;
+    
+    private Camera camera;
+    private HittableList world;
+    
+    public Render(HittableList world, Vec camPosition, Vec camRotation) {
+        this.camera = new Camera(camPosition, camRotation);
+        this.world = world;
+    }
     
     /**
      * Render the image
      * @param pixelData Image to render
      */
-    public static void render(int[] pixelData) {
-        Camera camera = new Camera();
+    public void render(int[] pixelData) {
         
         // Generating all the ray casts for the image. one per pixel atm!
         for (int j=App.imageHeight-1; j>=0; --j) {
@@ -37,7 +24,7 @@ public class Render implements Runnable {
             System.out.print(String.format("\rScanlines remaining: %d ", j));
             for (int i=0; i< App.imageWidth; ++i) {
                 Vec pixelColor = new Vec(0,0,0); // color of the pixel
-                for (int s=0; s<samplesPerPixel; ++s) {
+                for (int s=0; s<App.samplesPerPixel; ++s) {
                     // u and v are the offset from the center of the viewport
                     // Camara is at (0,0,0) and the viewport is centered at (0,0,1)
                     // u and v are floats between 0 and 1 and represent the percentage of the viewport
@@ -45,9 +32,9 @@ public class Render implements Runnable {
                     double v = ((double) j + Math.random()) / (App.imageHeight-1);
     
                     // ray from the camera to the pixel
-                    Ray r = camera.getRay(u, v);
+                    Ray r = this.camera.getRay(u, v);
                     // Calculate the color of the pixel based on the ray
-                    pixelColor = pixelColor.add(rayColor(r, world, maxDepth));
+                    pixelColor = pixelColor.add(rayColor(r, world, App.maxDepth));
                     
                 }
                 
@@ -55,7 +42,7 @@ public class Render implements Runnable {
                 // Write that color to the pixel
                 // System.out.print(String.format("(%d, %d)", i, j));
                 // pixelWriter.setArgb(i, App.imageHeight-1 - j, Vec.writeColor(pixelColor, samplesPerPixel));
-                pixelData[i + (App.imageHeight-1 - j) * App.imageWidth] = Vec.writeColor(pixelColor, samplesPerPixel);
+                pixelData[i + (App.imageHeight-1 - j) * App.imageWidth] = Vec.writeColor(pixelColor, App.samplesPerPixel);
             }
         }
         System.out.println(String.format("%nDone!")); // end line

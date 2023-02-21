@@ -38,4 +38,8 @@ public class HittableList {
         
         return hitAnything;
     }
+    
+    public void remove(Sphere sphere) {
+        objects.remove(sphere);
+    }
 }

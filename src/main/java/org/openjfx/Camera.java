@@ -7,32 +7,27 @@ public class Camera {
     private Vec horizontal;
     private Vec vertical;
     private Vec lowerLeftCorner;
+    private Vec camPosition;
+    private Vec camRotation;
     
-    private static Vec position = new Vec(0, 0, 0);
-    private static Vec rotation = new Vec(0, 0, 0);
-    
-    public Camera() {
+    public Camera(Vec camPosition, Vec camRotation) {
+        this.camPosition = camPosition;
+        this.camRotation = camRotation;
+        
         // Calculate the viewport
         horizontal = new Vec(viewportWidth, 0, 0);
         vertical = new Vec(0, viwportHeight, 0);
-        lowerLeftCorner = Render.origin
+        lowerLeftCorner = App.origin
           .sub(horizontal.mult(0.5))
           .sub(vertical.mult(0.5))
           .sub(new Vec(0, 0, focalLength));
     
         // Rotate the viewport
-        horizontal      = rotate(rotation, horizontal);
-        vertical        = rotate(rotation, vertical);
-        lowerLeftCorner = rotate(rotation, lowerLeftCorner);
+        horizontal      = rotate(this.camRotation, horizontal);
+        vertical        = rotate(this.camRotation, vertical);
+        lowerLeftCorner = rotate(this.camRotation, lowerLeftCorner);
     }
     
-    public static void setPosition(Vec position) {
-        Camera.position = position;
-    }
-    
-    public static void setRotation(Vec rotation) {
-         Camera.rotation = rotation;
-    }
     
     /**
      * Get a ray from the camera to the pixel
@@ -44,13 +39,13 @@ public class Camera {
         // u and v are the offset from the center of the viewport
         // Camara is at (0,0,0) and the viewport is centered at (0,0,1)
         // u and v are floats between 0 and 1 and represent the percentage of the viewport
-        Vec direction = position.add(lowerLeftCorner)
+        Vec direction = this.camPosition.add(lowerLeftCorner)
           .add(Vec.mult(horizontal, u))
           .add(Vec.mult(vertical, v))
-          .sub(position);
+          .sub(this.camPosition);
         
         // direction = rotate(direction);
-        return new Ray(position, direction);
+        return new Ray(this.camPosition, direction);
     }
     
     /**
