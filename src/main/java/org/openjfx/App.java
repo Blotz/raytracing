@@ -192,9 +192,8 @@ public class App extends Application {
         imageView.setImage(rwimage);
     }
     
-    
     @FXML
-    public void getSphereDropDown(Event event) {
+    public void getSphereDropDown() {
         // Generate new list
         ArrayList<Hittable> options = App.world.getObjects();
         // Create dropdown with each sphere being enumerated
@@ -251,6 +250,13 @@ public class App extends Application {
     }
     @FXML
     public void addSphere(ActionEvent event) {
+        // save old sphere
+        if (objectSelected instanceof Sphere) {
+            Sphere sphere = (Sphere) objectSelected;
+            parseSphere(sphere);
+        }
+        
+        // add new sphere
         Sphere sphere = new Sphere(
           new Vec(0, 0, 0),
           0,
@@ -259,24 +265,26 @@ public class App extends Application {
         App.world.add(sphere);
         
         // update ui
+        getSphereDropDown();
         sphereSelect.setValue(sphere);
         selectSphere();
         
     }
     @FXML
     public void removeSphere(ActionEvent event) {
-        Hittable objectSelected = (Hittable) sphereSelect.getValue();
+        // delete sphere
         if (objectSelected == null) {
             return;
         }
-        
         if (objectSelected instanceof Sphere) {
             Sphere sphere = (Sphere) objectSelected;
             App.world.remove(sphere);
         }
         
         // update ui
+        objectSelected = null;
         sphereSelect.setValue(null);
+        getSphereDropDown();
         selectSphere();
     }
     public void saveSphere() {
