@@ -208,9 +208,9 @@ public class App extends Application {
             zSphere.setText(String.format("%f", sphere.center.z()));
             rSphere.setText(String.format("%f", sphere.radius));
             
-            // rValue.setValue(sphere.r());
-            // gValue.setValue(sphere.g());
-            // bValue.setValue(sphere.b());
+             rValue.setValue(sphere.r() * 255);
+             gValue.setValue(sphere.g() * 255);
+             bValue.setValue(sphere.b() * 255);
         }
         
     }
@@ -334,13 +334,13 @@ public class App extends Application {
         b = this.bValue.getValue();
         
         // Convert to absorbion
-        r = 1 - (r / 255);
-        g = 1 - (g / 255);
-        b = 1 - (b / 255);
+        r = r / 255f;
+        g = g / 255f;
+        b = b / 255f;
         
         sphere.setCenter(new Vec(xPos, yPos, zPos));
         sphere.setRadius(radius);
-        // sphere.setColor(new Vec(r, g, b));
+        sphere.setColor(r, g, b);
     }
     
     public static void main(String[] args) {

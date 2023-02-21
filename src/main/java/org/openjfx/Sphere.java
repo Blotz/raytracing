@@ -48,6 +48,20 @@ public class Sphere implements Hittable {
         return true;
     }
     
+    public double r() {
+        return this.material.r();
+    }
+    public double g() {
+        return this.material.g();
+    }
+    public double b() {
+        return this.material.b();
+    }
+    
+    public void setColor(double r, double g, double b) {
+        this.material.setColor(r, g, b);
+    }
+    
     @Override
     public String toString() {
         return "Sphere{" +

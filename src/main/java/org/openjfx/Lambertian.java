@@ -21,4 +21,16 @@ public class Lambertian implements Material {
         
         return true;
     }
+    public double r() {
+        return this.albedo.x();
+    }
+    public double g() {
+        return this.albedo.y();
+    }
+    public double b() {
+        return this.albedo.z();
+    }
+    public void setColor(double r, double g, double b) {
+        this.albedo.set(new Vec(r, g, b));
+    }
 }
