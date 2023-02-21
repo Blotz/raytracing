@@ -206,10 +206,10 @@ public class App extends Application {
     public void selectSphere() {
         Hittable newObjectSelected = (Hittable) sphereSelect.getValue();
         if (newObjectSelected == null) {
-            xSphere.setText(String.format("%f", 0f));
-            ySphere.setText(String.format("%f", 0f));
-            zSphere.setText(String.format("%f", 0f));
-            rSphere.setText(String.format("%f", 0f));
+            xSphere.setText("0");
+            ySphere.setText("0");
+            zSphere.setText("0");
+            rSphere.setText("0");
     
             rValue.setValue(0f);
             gValue.setValue(0f);
@@ -285,7 +285,6 @@ public class App extends Application {
         objectSelected = null;
         sphereSelect.setValue(null);
         getSphereDropDown();
-        selectSphere();
     }
     public void saveSphere() {
         Hittable objectSelected = (Hittable) sphereSelect.getValue();
