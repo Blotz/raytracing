@@ -21,6 +21,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
@@ -97,6 +98,7 @@ public class App extends Application {
     private boolean hasError = false;
     private String errorMessage = new String();
     private static final String doubleValueError = new String("%s has to be a decimal number");
+    private static final String lessThanZeroError = new String("%s has to be greater than 0");
     private Hittable objectSelected = null;
     
     @Override
@@ -132,7 +134,6 @@ public class App extends Application {
         App.maxDepth = 50;
         render();
     }
-    @FXML
     public void render() {
         // System.out.println("Getting camara position");
         // Save settings
@@ -191,6 +192,7 @@ public class App extends Application {
         imageView.setImage(rwimage);
     }
     
+    
     @FXML
     public void getSphereDropDown(Event event) {
         // Generate new list
@@ -236,10 +238,10 @@ public class App extends Application {
         // update ui
         if (objectSelected instanceof Sphere) {
             Sphere sphere = (Sphere) objectSelected;
-            xSphere.setText(String.format("%f", sphere.center.x()));
-            ySphere.setText(String.format("%f", sphere.center.y()));
-            zSphere.setText(String.format("%f", sphere.center.z()));
-            rSphere.setText(String.format("%f", sphere.radius));
+            xSphere.setText(removeTrailingZeros(String.format("%f", sphere.center.x())));
+            ySphere.setText(removeTrailingZeros(String.format("%f", sphere.center.y())));
+            zSphere.setText(removeTrailingZeros(String.format("%f", sphere.center.z())));
+            rSphere.setText(removeTrailingZeros(String.format("%f", sphere.radius)));
             
              rValue.setValue(sphere.r() * 255);
              gValue.setValue(sphere.g() * 255);
@@ -247,9 +249,8 @@ public class App extends Application {
         }
         
     }
-    
     @FXML
-    public void addSphere(ActionEvent event) throws IOException {
+    public void addSphere(ActionEvent event) {
         Sphere sphere = new Sphere(
           new Vec(0, 0, 0),
           0,
@@ -262,7 +263,6 @@ public class App extends Application {
         selectSphere();
         
     }
-    
     @FXML
     public void removeSphere(ActionEvent event) {
         Hittable objectSelected = (Hittable) sphereSelect.getValue();
@@ -279,7 +279,6 @@ public class App extends Application {
         sphereSelect.setValue(null);
         selectSphere();
     }
-    
     public void saveSphere() {
         Hittable objectSelected = (Hittable) sphereSelect.getValue();
         if (objectSelected == null) {
@@ -291,6 +290,62 @@ public class App extends Application {
             parseSphere(sphere);
         }
     }
+    private void parseSphere(Sphere sphere) {
+        double xPos = 0f;
+        double yPos = 0f;
+        double zPos = 0f;
+        
+        double radius = 0f;
+        
+        double r = 0f;
+        double g = 0f;
+        double b = 0f;
+        
+        try {
+            xPos = Double.parseDouble(this.xSphere.getText());
+        } catch(NumberFormatException e) {
+            errorMessage(String.format(doubleValueError, "Sphere X position"));
+        }
+        try {
+            yPos = Double.parseDouble(this.ySphere.getText());
+        } catch(NumberFormatException e) {
+            errorMessage(String.format(doubleValueError, "Sphere Y position"));
+        }
+        try {
+            zPos = Double.parseDouble(this.zSphere.getText());
+        } catch(NumberFormatException e) {
+            errorMessage(String.format(doubleValueError, "Sphere Z position"));
+        }
+        try {
+            radius = Double.parseDouble(this.rSphere.getText());
+            if (radius < 0) {
+                throw new IllegalArgumentException();
+            }
+        } catch(NumberFormatException e) {
+            errorMessage(String.format(doubleValueError, "Sphere radius"));
+        } catch (IllegalArgumentException e) {
+            errorMessage(String.format(lessThanZeroError, "Sphere radius"));
+        }
+        
+        if (hasError) {
+            return;
+        }
+        
+        r = this.rValue.getValue();
+        g = this.gValue.getValue();
+        b = this.bValue.getValue();
+        
+        // Convert to absorbion
+        r = r / 255f;
+        g = g / 255f;
+        b = b / 255f;
+        
+        sphere.setCenter(new Vec(xPos, yPos, zPos));
+        sphere.setRadius(radius);
+        sphere.setColor(r, g, b);
+    }
+    
+    
     public void saveCamara() {
         parseCamara();
     }
@@ -334,6 +389,10 @@ public class App extends Application {
             errorMessage(String.format(doubleValueError, "Camara roll"));
         }
         
+        if (hasError) {
+            return;
+        }
+        
         // convert to radians
         pitch = Math.toRadians(pitch);
         yaw   = Math.toRadians(yaw);
@@ -342,50 +401,12 @@ public class App extends Application {
         App.camPosition = new Vec(xPos, yPos, zPos);
         App.camRotation = new Vec(pitch, yaw, roll);
     }
-    private void parseSphere(Sphere sphere) {
-        double xPos = 0f;
-        double yPos = 0f;
-        double zPos = 0f;
-        
-        double radius = 0f;
-        
-        double r = 0f;
-        double g = 0f;
-        double b = 0f;
-        
-        try {
-            xPos = Double.parseDouble(this.xSphere.getText());
-        } catch(NumberFormatException e) {
-            errorMessage(String.format(doubleValueError, "Sphere X position"));
+    
+    private static String removeTrailingZeros(String value) {
+        if (value.indexOf('.') < 0) {
+            return value;
         }
-        try {
-            yPos = Double.parseDouble(this.ySphere.getText());
-        } catch(NumberFormatException e) {
-            errorMessage(String.format(doubleValueError, "Sphere Y position"));
-        }
-        try {
-            zPos = Double.parseDouble(this.zSphere.getText());
-        } catch(NumberFormatException e) {
-            errorMessage(String.format(doubleValueError, "Sphere Z position"));
-        }
-        try {
-            radius = Double.parseDouble(this.rSphere.getText());
-        } catch(NumberFormatException e) {
-            errorMessage(String.format(doubleValueError, "Sphere radius"));
-        }
-        
-        r = this.rValue.getValue();
-        g = this.gValue.getValue();
-        b = this.bValue.getValue();
-        
-        // Convert to absorbion
-        r = r / 255f;
-        g = g / 255f;
-        b = b / 255f;
-        
-        sphere.setCenter(new Vec(xPos, yPos, zPos));
-        sphere.setRadius(radius);
-        sphere.setColor(r, g, b);
+        return value.replaceAll("0*$", "").replaceAll("\\.$", "");
     }
     
     private void showErrorMessage() {
