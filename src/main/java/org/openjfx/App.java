@@ -171,7 +171,7 @@ public class App extends Application {
         Render render = new Render(world, camPosition, camRotation);
     
         Thread thread = new Thread(() -> {
-            render.render(pixelData);
+            render.render(pixelData, 0, imageWidth, 0, imageHeight);
             timeline.stop();
             updateImage(pixelData, copyPixelWriter, copyImage);
             root.setDisable(false);

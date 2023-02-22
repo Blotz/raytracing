@@ -16,13 +16,13 @@ public class Render {
      * Render the image
      * @param pixelData Image to render
      */
-    public void render(int[] pixelData) {
+    public void render(int[] pixelData, int x1, int x2, int y1, int y2) {
         
         // Generating all the ray casts for the image. one per pixel atm!
-        for (int j=App.imageHeight-1; j>=0; --j) {
+        for (int j=y2-1; j>=y1; --j) {
             // System.out.println();
             System.out.print(String.format("\rScanlines remaining: %d ", j));
-            for (int i=0; i< App.imageWidth; ++i) {
+            for (int i=x1; i< x2; ++i) {
                 Vec pixelColor = new Vec(0,0,0); // color of the pixel
                 for (int s=0; s<App.samplesPerPixel; ++s) {
                     // u and v are the offset from the center of the viewport
@@ -77,26 +77,5 @@ public class Render {
           new Vec(1.0, 1.0, 1.0).mult(1.0-t),
           new Vec(0.5, 0.7, 1.0).mult(t)
         );
-    }
-    
-    /**
-     * Clamp a value between a min and max
-     * @param x The value to clamp
-     * @param min The minimum value x can be
-     * @param max The maximum value x can be
-     * @return The clamped value
-     */
-    public static double clamp(double x, double min, double max) {
-        if (x < min) {
-            return min;
-        }
-        if (x > max) {
-            return max;
-        }
-        return x;
-    }
-    
-    public void run() {
-        System.out.println("Render thread started");
     }
 }
