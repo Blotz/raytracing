@@ -7,7 +7,6 @@ import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
@@ -21,7 +20,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
@@ -160,7 +158,7 @@ public class App extends Application {
         imageView.setFitWidth(imageWidth);
         imageView.setFitHeight(imageHeight);
         
-        Timeline timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(100), new EventHandler<ActionEvent>() {
+        Timeline timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(500), new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 updateImage(pixelData, copyPixelWriter, copyImage);
@@ -171,10 +169,13 @@ public class App extends Application {
         Render render = new Render(world, camPosition, camRotation);
     
         Thread thread = new Thread(() -> {
+            long s1 = System.currentTimeMillis();
             render.render(pixelData, 0, imageWidth, 0, imageHeight);
+            long s2 = System.currentTimeMillis();
             timeline.stop();
             updateImage(pixelData, copyPixelWriter, copyImage);
             root.setDisable(false);
+            System.out.println("Render time: " + (s2 - s1) + "ms");
         });
         updateImage(pixelData, copyPixelWriter, copyImage);
         thread.start();

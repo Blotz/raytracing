@@ -17,11 +17,12 @@ public class Render {
      * @param pixelData Image to render
      */
     public void render(int[] pixelData, int x1, int x2, int y1, int y2) {
+        System.out.println(String.format("Rendering from (%d, %d) to (%d, %d)", x1, y1, x2, y2));
         
         // Generating all the ray casts for the image. one per pixel atm!
         for (int j=y2-1; j>=y1; --j) {
             // System.out.println();
-            System.out.print(String.format("\rScanlines remaining: %d ", j));
+            // System.out.print(String.format("\rScanlines remaining: %d ", j));
             for (int i=x1; i< x2; ++i) {
                 Vec pixelColor = new Vec(0,0,0); // color of the pixel
                 for (int s=0; s<App.samplesPerPixel; ++s) {
@@ -45,7 +46,8 @@ public class Render {
                 pixelData[i + (App.imageHeight-1 - j) * App.imageWidth] = Vec.writeColor(pixelColor, App.samplesPerPixel);
             }
         }
-        System.out.println(String.format("%nDone!")); // end line
+        // System.out.println(String.format("%nDone!")); // end line
+        System.out.println(String.format("Finished rendering from (%d, %d) to (%d, %d)", x1, y1, x2, y2));
     }
     
     
