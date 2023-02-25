@@ -1,13 +1,9 @@
 package org.openjfx;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.input.KeyEvent;
@@ -129,9 +125,10 @@ public class App extends Application {
     @FXML
     public void renderOnButton(ActionEvent event) {
         App.samplesPerPixel = 100;
-        App.maxDepth = 50;
+        App.maxDepth = 3;
         render();
     }
+    
     public void render() {
         // System.out.println("Getting camara position");
         // Save settings
@@ -142,55 +139,18 @@ public class App extends Application {
             showErrorMessage();
             return;
         }
-        Parent root = imageView.getParent();
-        root.setDisable(true);
-        
-        // System.out.println("Starting main render loop...");
-        // generate a writable image
-        WritableImage rwimage = new WritableImage(imageWidth, imageHeight);
-        
-        int[] pixelData = new int[imageWidth * imageHeight];
-        WritableImage copyImage = new WritableImage(imageWidth, imageHeight);
-        PixelWriter copyPixelWriter = copyImage.getPixelWriter();
-    
-        // set image to ImageView
-        imageView.setImage(rwimage);
+        // setup image
         imageView.setFitWidth(imageWidth);
         imageView.setFitHeight(imageHeight);
         
-        Timeline timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(500), new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                updateImage(pixelData, copyPixelWriter, copyImage);
-            }
-        }));
-        timeline.setCycleCount(Animation.INDEFINITE);
+        Thread renderThread = new Thread(new RenderThread(
+          imageView,
+          world, camPosition, camRotation,
+          0, imageWidth, 0, imageHeight
+        ));
         
-        Render render = new Render(world, camPosition, camRotation);
-    
-        Thread thread = new Thread(() -> {
-            long s1 = System.currentTimeMillis();
-            render.render(pixelData, 0, imageWidth, 0, imageHeight);
-            long s2 = System.currentTimeMillis();
-            timeline.stop();
-            updateImage(pixelData, copyPixelWriter, copyImage);
-            root.setDisable(false);
-            System.out.println("Render time: " + (s2 - s1) + "ms");
-        });
-        updateImage(pixelData, copyPixelWriter, copyImage);
-        thread.start();
-        timeline.play();
-    }
-    
-    /**
-     * Updates the image
-     * @param pixelData A temporary array to store the pixel data
-     * @param pixelWriter The target image writer
-     * @param rwimage The target image
-     */
-    private void updateImage(int[] pixelData, PixelWriter pixelWriter, WritableImage rwimage) {
-        pixelWriter.setPixels(0, 0, imageWidth, imageHeight, PixelFormat.getIntArgbInstance(), pixelData, 0, imageWidth);
-        imageView.setImage(rwimage);
+        // System.out.println("Starting render thread");
+        renderThread.start();
     }
     
     @FXML
