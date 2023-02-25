@@ -17,9 +17,9 @@ public class Camera {
         // Calculate the viewport
         horizontal = new Vec(viewportWidth, 0, 0);
         vertical = new Vec(0, viwportHeight, 0);
-        lowerLeftCorner = App.origin
-          .sub(horizontal.mult(0.5))
-          .sub(vertical.mult(0.5))
+        lowerLeftCorner = App.origin.clone()
+          .sub(Vec.mult(horizontal, 0.5))
+          .sub(Vec.mult(vertical, 0.5))
           .sub(new Vec(0, 0, focalLength));
     
         // Rotate the viewport
@@ -39,7 +39,8 @@ public class Camera {
         // u and v are the offset from the center of the viewport
         // Camara is at (0,0,0) and the viewport is centered at (0,0,1)
         // u and v are floats between 0 and 1 and represent the percentage of the viewport
-        Vec direction = this.camPosition.add(lowerLeftCorner)
+        
+        Vec direction = this.camPosition.clone().add(lowerLeftCorner)
           .add(Vec.mult(horizontal, u))
           .add(Vec.mult(vertical, v))
           .sub(this.camPosition);

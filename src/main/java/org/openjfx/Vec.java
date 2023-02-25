@@ -33,32 +33,32 @@ public class Vec {
     }
     
     public Vec add(Vec v) {
-        return new Vec(
-          this.x + v.x(),
-          this.y + v.y(),
-          this.z + v.z()
-        );
+        this.x += v.x();
+        this.y += v.y();
+        this.z += v.z();
+        
+        return this;
     }
     public Vec sub(Vec v) {
-        return new Vec(
-          this.x - v.x(),
-          this.y - v.y(),
-          this.z - v.z()
-        );
+        this.x -= v.x();
+        this.y -= v.y();
+        this.z -= v.z();
+        
+        return this;
     }
     public Vec mult(double t) {
-        return new Vec(
-          this.x * t,
-          this.y * t,
-          this.z * t
-        );
+        this.x *= t;
+        this.y *= t;
+        this.z *= t;
+        
+        return this;
     }
     public Vec div(double t) {
-        return new Vec(
-          this.x / t,
-          this.y / t,
-          this.z / t
-        );
+        this.x /= t;
+        this.y /= t;
+        this.z /= t;
+        
+        return this;
     }
     
     public double lengthSquared() {
@@ -66,6 +66,20 @@ public class Vec {
     }
     public double length() {
         return Math.sqrt(this.lengthSquared());
+    }
+    
+    public boolean nearZero() {
+        double s = 1e-8;
+        return (Math.abs(this.x) < s) && (Math.abs(this.y) < s) && (Math.abs(this.z) < s);
+    }
+    
+    public void set(Vec v) {
+        this.x = v.x();
+        this.y = v.y();
+        this.z = v.z();
+    }
+    public Vec clone() {
+        return new Vec(this.x, this.y, this.z);
     }
     
     @Override
@@ -76,6 +90,18 @@ public class Vec {
           ", z=" + z +
           '}';
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vec vec = (Vec) o;
+        return Double.compare(vec.x, x) == 0 && Double.compare(vec.y, y) == 0 && Double.compare(vec.z, z) == 0;
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y, z);
+    }
+    
     
     public static Vec add(Vec v1, Vec v2) {
         return new Vec(v1.x() + v2.x(), v1.y() + v2.y(), v1.z() + v2.z());
@@ -120,16 +146,6 @@ public class Vec {
         return (255 << 24) | ((int)(255.999 * r) << 16) | ((int)(255.999 * g) << 8) | (int)(255.999 * b);
     }
     
-    
-    public static double randomDouble() {
-        return Math.random();
-    }
-    public static double randomDouble(double min, double max) {
-        return Math.random() * (max - min) + min;
-    }
-    public static Vec random() {
-        return new Vec(Math.random(), Math.random(), Math.random());
-    }
     public static Vec random(double min, double max) {
         return new Vec(Math.random() * (max - min) + min, Math.random() * (max - min) + min, Math.random() * (max - min) + min);
     }
@@ -140,7 +156,6 @@ public class Vec {
             return p;
         }
     }
-    
     public static Vec randomInHemisphere(Vec normal) {
         Vec inUnitSphere = Vec.randomInUnitSphere();
         if (Vec.dot(inUnitSphere, normal) > 0.0) {
@@ -149,31 +164,7 @@ public class Vec {
             return inUnitSphere.neg();
         }
     }
-    
     public static Vec randomUnitVector() {
         return Vec.unitVector(Vec.randomInUnitSphere());
-    }
-    
-    public boolean nearZero() {
-        double s = 1e-8;
-        return (Math.abs(this.x) < s) && (Math.abs(this.y) < s) && (Math.abs(this.z) < s);
-    }
-    
-    public void set(Vec v) {
-        this.x = v.x();
-        this.y = v.y();
-        this.z = v.z();
-    }
-    
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Vec vec = (Vec) o;
-        return Double.compare(vec.x, x) == 0 && Double.compare(vec.y, y) == 0 && Double.compare(vec.z, z) == 0;
-    }
-    @Override
-    public int hashCode() {
-        return Objects.hash(x, y, z);
     }
 }

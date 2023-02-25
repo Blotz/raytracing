@@ -35,7 +35,7 @@ public class Render {
                     // ray from the camera to the pixel
                     Ray r = this.camera.getRay(u, v);
                     // Calculate the color of the pixel based on the ray
-                    pixelColor = pixelColor.add(rayColor(r, world, App.maxDepth));
+                    pixelColor = Vec.add(pixelColor, rayColor(r, world, App.maxDepth));
                     
                 }
                 
