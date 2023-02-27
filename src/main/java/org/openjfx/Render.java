@@ -26,7 +26,9 @@ public class Render {
                 // System.out.println();
                 // System.out.print(String.format("\rScanlines remaining: %d ", j));
                 for (int i = x1; i < x2; ++i) {
-                    Vec pixelColor = new Vec(0, 0, 0); // color of the pixel
+                    // storing the sum raw pixel data for compute in passes
+                    double[] rawPixel = rawPixelData[i + (App.imageHeight - 1 - j) * App.imageWidth];
+                    
                     for (int s = 0; s < App.samplesPerPixel; ++s) {
                         // u and v are the offset from the center of the viewport
                         // Camara is at (0,0,0) and the viewport is centered at (0,0,1)
@@ -37,20 +39,16 @@ public class Render {
                         // ray from the camera to the pixel
                         Ray r = this.camera.getRay(u, v);
                         // Calculate the color of the pixel based on the ray
-                        pixelColor = Vec.add(pixelColor, rayColor(r, world, App.maxDepth));
+                        Vec color = clampUpper(rayColor(r, world, App.maxDepth));
+                        
+                        rawPixel[0] += color.x();
+                        rawPixel[1] += color.y();
+                        rawPixel[2] += color.z();
                     }
             
             
                     // Write that color to the pixel
-                    // System.out.print(String.format("(%d, %d)", i, j));
-                    // pixelWriter.setArgb(i, App.imageHeight-1 - j, Vec.writeColor(pixelColor, samplesPerPixel));
-                    double[] rawPixel = rawPixelData[i + (App.imageHeight - 1 - j) * App.imageWidth];
-                    rawPixel[0] += pixelColor.x();
-                    rawPixel[1] += pixelColor.y();
-                    rawPixel[2] += pixelColor.z();
-                    
-                    pixelData[i + (App.imageHeight - 1 - j) * App.imageWidth] =
-                      Vec.writeColor(rawPixel, App.samplesPerPixel, p);
+                    pixelData[i + (App.imageHeight - 1 - j) * App.imageWidth] = Vec.writeColor(rawPixel, App.samplesPerPixel, p);
                 }
             }
             long s2 = System.currentTimeMillis();
@@ -98,5 +96,13 @@ public class Render {
         
         // return the emitted color + the color of the scattered ray
         return Vec.add(emitted, Vec.mult(attenuation, rayColor(scattered, world, depth-1)));
+    }
+    
+    private Vec clampUpper(Vec v) {
+        return new Vec(
+          Math.min(v.x(), 1f),
+          Math.min(v.y(), 1f),
+          Math.min(v.z(), 1f)
+        );
     }
 }
