@@ -14,10 +14,14 @@ public class HittableList {
         return objects;
     }
     
-    public void clear() {
-        objects.clear();
-    }
-    
+    /**
+     * Check if the ray hits any object in the world
+     * @param r Ray
+     * @param tMin Minimum distance to check
+     * @param tMax Maximum distance to check
+     * @param rec HitRecord
+     * @return
+     */
     public boolean hit(Ray r, double tMin, double tMax, HitRecord rec) {
         HitRecord tempRec = new HitRecord();
         boolean hitAnything = false;

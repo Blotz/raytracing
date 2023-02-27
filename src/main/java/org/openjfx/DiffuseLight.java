@@ -1,33 +1,34 @@
 package org.openjfx;
 
 public class DiffuseLight implements Material {
+    private Vec emit;
     
+    public DiffuseLight(Vec emit) {
+        this.emit = emit;
+    }
     @Override
-    public boolean scatter(Ray rayIn, HitRecord hitRecord, Vec attenuation, Ray scattered) {
-        return false;
+    public Vec emitted() {
+        return emit;
     }
     
     @Override
     public double r() {
-        return 0;
+        return this.emit.x();
     }
     
     @Override
     public double g() {
-        return 0;
+        return this.emit.y();
     }
     
     @Override
     public double b() {
-        return 0;
+        return this.emit.z();
     }
     
     @Override
     public void setColor(double r, double g, double b) {
-    
+        this.emit.set(new Vec(r, g, b));
     }
     
-    public Vec emitted(double u, double v, Vec p) {
-        return new Vec(0, 0, 0);
-    }
 }

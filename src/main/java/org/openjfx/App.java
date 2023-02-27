@@ -49,8 +49,14 @@ public class App extends Application {
             100,
             new Lambertian(new Vec(0.8, 0.8, 0.0))
         );
+        Sphere s3 = new Sphere(
+          new Vec(0,3,-3.5),
+          0.5,
+          new DiffuseLight(new Vec(10,10,10))
+        );
         world.add(s1);
         world.add(s2);
+        world.add(s3);
     }
 
     // GUI
@@ -124,7 +130,7 @@ public class App extends Application {
     }
     @FXML
     public void renderOnButton(ActionEvent event) {
-        App.samplesPerPixel = 100;
+        App.samplesPerPixel = 1000;
         App.maxDepth = 3;
         render();
     }

@@ -60,24 +60,31 @@ public class Render {
         if (depth <= 0) {
             return new Vec(0,0,0);
         }
-        // double t = hitSphere(new Vec(0f, 0f, -1f), 0.5f, r);
+    
         HitRecord rec = new HitRecord();
-        if (world.hit(r, 0.001, infinity, rec)) {
-            Ray scattered = new Ray(new Vec(0,0,0), new Vec(0,0,0));
-            Vec attenuation = new Vec(0,0,0);
+        
+        if (!world.hit(r, 0.001, infinity, rec)) {
+            // background color
+            return new Vec(0.01,0.01,0.01);
             
-            if (rec.material.scatter(r, rec, attenuation, scattered)) {
-                return Vec.mult(attenuation, rayColor(scattered, world, depth-1));
-            }
-            return new Vec(0,0,0);
+            // Vec unit_direction = Vec.unitVector(r.direction());
+            // double t = 0.5*(unit_direction.y() + 1.0);
+    
+            // return Vec.add(
+            //   new Vec(1.0, 1.0, 1.0).mult(1.0-t),
+            //   new Vec(0.5, 0.7, 1.0).mult(t)
+            // );
         }
         
-        Vec unit_direction = Vec.unitVector(r.direction());
-        double t = 0.5*(unit_direction.y() + 1.0);
+        // scattered ray
+        Ray scattered = new Ray(new Vec(0,0,0), new Vec(0,0,0));
+        Vec attenuation = new Vec(0,0,0);
+        Vec emitted = rec.material.emitted();
         
-        return Vec.add(
-          new Vec(1.0, 1.0, 1.0).mult(1.0-t),
-          new Vec(0.5, 0.7, 1.0).mult(t)
-        );
+        if (!rec.material.scatter(r, rec, attenuation, scattered)) {
+            return emitted;
+        }
+        
+        return Vec.add(emitted, Vec.mult(attenuation, rayColor(scattered, world, depth-1)));
     }
 }
