@@ -57,8 +57,8 @@ public class App extends Application {
         );
         Sphere s4 = new Sphere(
           new Vec(0,3,-3.5),
-          0.1,
-          new DiffuseLight(new Vec(100,100,100))
+          1,
+          new DiffuseLight(new Vec(10,10,10))
         );
         world.add(s1);
         world.add(s2);
