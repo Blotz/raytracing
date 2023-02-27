@@ -29,8 +29,9 @@ public class App extends Application {
     
     // Render
     public static Vec origin = new Vec(0f, 0f, 0f);
+    public static int numPasses = 1;
     public static int samplesPerPixel = 100;
-    public static int maxDepth = 50;
+    public static int maxDepth = 3;
     
     // Camara
     private static Vec camPosition = new Vec(0, 0, 0);
@@ -104,11 +105,12 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("fxml/scene.fxml"));
-        Image image = new Image(getClass().getResource("image.jpg").toString(), imageWidth, imageHeight, true, true);
+        
+        // Image image = new Image(getClass().getResource("image.jpg").toString(), imageWidth, imageHeight, true, true);
         // look up ImageView
-        imageView = (ImageView) root.lookup("#imageView");
+        // imageView = (ImageView) root.lookup("#imageView");
         // set image to ImageView
-        imageView.setImage(image);
+        // imageView.setImage(image);
         
         // Create Scene
         Scene scene = new Scene(root);
@@ -123,6 +125,7 @@ public class App extends Application {
     @FXML
     public void renderOnEnter(KeyEvent event) {
         if (event.getCode().toString().equals("ENTER")) {
+            App.numPasses = 1;
             App.samplesPerPixel = 5;
             App.maxDepth = 3;
             render();
@@ -130,7 +133,8 @@ public class App extends Application {
     }
     @FXML
     public void renderOnButton(ActionEvent event) {
-        App.samplesPerPixel = 1000;
+        App.numPasses = 100;
+        App.samplesPerPixel = 100;
         App.maxDepth = 3;
         render();
     }

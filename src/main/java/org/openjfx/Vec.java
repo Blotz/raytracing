@@ -132,12 +132,12 @@ public class Vec {
         return Vec.div(v, v.length());
     }
     
-    public static int writeColor(Vec color, int samplesPerPixel) {
-        double r = color.x();
-        double g = color.y();
-        double b = color.z();
+    public static int writeColor(double[] color, int samplesPerPixel, int numberOfPasses) {
+        double r = color[0];
+        double g = color[1];
+        double b = color[2];
         
-        double scale = 1.0 / samplesPerPixel;
+        double scale = 1.0 / (samplesPerPixel * numberOfPasses);
         r = Math.sqrt(scale * r);
         g = Math.sqrt(scale * g);
         b = Math.sqrt(scale * b);

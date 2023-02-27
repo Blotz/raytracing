@@ -17,33 +17,43 @@ public class Render {
      * @param pixelData Image to render
      */
     public void render(int[] pixelData, int x1, int x2, int y1, int y2) {
+        double[][] rawPixelData = new double[App.imageWidth * App.imageHeight][3];
         System.out.println(String.format("Rendering from (%d, %d) to (%d, %d)", x1, y1, x2, y2));
-        
-        // Generating all the ray casts for the image. one per pixel atm!
-        for (int j=y2-1; j>=y1; --j) {
-            // System.out.println();
-            // System.out.print(String.format("\rScanlines remaining: %d ", j));
-            for (int i=x1; i< x2; ++i) {
-                Vec pixelColor = new Vec(0,0,0); // color of the pixel
-                for (int s=0; s<App.samplesPerPixel; ++s) {
-                    // u and v are the offset from the center of the viewport
-                    // Camara is at (0,0,0) and the viewport is centered at (0,0,1)
-                    // u and v are floats between 0 and 1 and represent the percentage of the viewport
-                    double u = ((double) i + Math.random()) / (App.imageWidth-1);
-                    double v = ((double) j + Math.random()) / (App.imageHeight-1);
-    
-                    // ray from the camera to the pixel
-                    Ray r = this.camera.getRay(u, v);
-                    // Calculate the color of the pixel based on the ray
-                    pixelColor = Vec.add(pixelColor, rayColor(r, world, App.maxDepth));
+        for (int p=1; p<=App.numPasses; ++p) {
+            System.out.println("Pass " + (p) + "/" + App.numPasses);
+            System.out.println((p * App.samplesPerPixel) + " samples per pixel");
+            // Generating all the ray casts for the image. one per pixel atm!
+            for (int j = y2 - 1; j >= y1; --j) {
+                // System.out.println();
+                // System.out.print(String.format("\rScanlines remaining: %d ", j));
+                for (int i = x1; i < x2; ++i) {
+                    Vec pixelColor = new Vec(0, 0, 0); // color of the pixel
+                    for (int s = 0; s < App.samplesPerPixel; ++s) {
+                        // u and v are the offset from the center of the viewport
+                        // Camara is at (0,0,0) and the viewport is centered at (0,0,1)
+                        // u and v are floats between 0 and 1 and represent the percentage of the viewport
+                        double u = ((double) i + Math.random()) / (App.imageWidth - 1);
+                        double v = ((double) j + Math.random()) / (App.imageHeight - 1);
+                
+                        // ray from the camera to the pixel
+                        Ray r = this.camera.getRay(u, v);
+                        // Calculate the color of the pixel based on the ray
+                        pixelColor = Vec.add(pixelColor, rayColor(r, world, App.maxDepth));
+                
+                    }
+            
+            
+                    // Write that color to the pixel
+                    // System.out.print(String.format("(%d, %d)", i, j));
+                    // pixelWriter.setArgb(i, App.imageHeight-1 - j, Vec.writeColor(pixelColor, samplesPerPixel));
+                    double[] rawPixel = rawPixelData[i + (App.imageHeight - 1 - j) * App.imageWidth];
+                    rawPixel[0] += pixelColor.x();
+                    rawPixel[1] += pixelColor.y();
+                    rawPixel[2] += pixelColor.z();
                     
+                    pixelData[i + (App.imageHeight - 1 - j) * App.imageWidth] =
+                      Vec.writeColor(rawPixel, App.samplesPerPixel, App.numPasses);
                 }
-                
-                
-                // Write that color to the pixel
-                // System.out.print(String.format("(%d, %d)", i, j));
-                // pixelWriter.setArgb(i, App.imageHeight-1 - j, Vec.writeColor(pixelColor, samplesPerPixel));
-                pixelData[i + (App.imageHeight-1 - j) * App.imageWidth] = Vec.writeColor(pixelColor, App.samplesPerPixel);
             }
         }
         // System.out.println(String.format("%nDone!")); // end line
