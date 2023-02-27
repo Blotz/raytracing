@@ -142,6 +142,14 @@ public class Vec {
         g = Math.sqrt(scale * g);
         b = Math.sqrt(scale * b);
         
+        // clamp color values preportionally
+//        double max = Math.max(r, Math.max(g, b));
+//        if (max > 1.0) {
+//            r /= max;
+//            g /= max;
+//            b /= max;
+//        }
+        
         // bit shift right to argb format
         return (255 << 24) | ((int)(255.999 * r) << 16) | ((int)(255.999 * g) << 8) | (int)(255.999 * b);
     }

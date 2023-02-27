@@ -62,8 +62,8 @@ public class App extends Application {
         );
         world.add(s1);
         world.add(s2);
-        world.add(s3);
-//        world.add(s4);
+//        world.add(s3);
+        world.add(s4);
     }
 
     // GUI

@@ -39,7 +39,7 @@ public class Render {
                         // ray from the camera to the pixel
                         Ray r = this.camera.getRay(u, v);
                         // Calculate the color of the pixel based on the ray
-                        Vec color = clampUpper(rayColor(r, world, App.maxDepth));
+                        Vec color = rayColor(r, world, App.maxDepth);
                         
                         rawPixel[0] += color.x();
                         rawPixel[1] += color.y();
@@ -96,13 +96,5 @@ public class Render {
         
         // return the emitted color + the color of the scattered ray
         return Vec.add(emitted, Vec.mult(attenuation, rayColor(scattered, world, depth-1)));
-    }
-    
-    private Vec clampUpper(Vec v) {
-        return new Vec(
-          Math.min(v.x(), 1f),
-          Math.min(v.y(), 1f),
-          Math.min(v.z(), 1f)
-        );
     }
 }
