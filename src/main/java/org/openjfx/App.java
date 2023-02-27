@@ -214,14 +214,31 @@ public class App extends Application {
         // update ui
         if (objectSelected instanceof Sphere) {
             Sphere sphere = (Sphere) objectSelected;
-            xSphere.setText(removeTrailingZeros(String.format("%f", sphere.center.x())));
-            ySphere.setText(removeTrailingZeros(String.format("%f", sphere.center.y())));
-            zSphere.setText(removeTrailingZeros(String.format("%f", sphere.center.z())));
-            rSphere.setText(removeTrailingZeros(String.format("%f", sphere.radius)));
+            xSphere.setText(removeTrailingZeros(String.format("%f", sphere.getCenter().x())));
+            ySphere.setText(removeTrailingZeros(String.format("%f", sphere.getCenter().y())));
+            zSphere.setText(removeTrailingZeros(String.format("%f", sphere.getCenter().z())));
+            rSphere.setText(removeTrailingZeros(String.format("%f", sphere.getRadius())));
             
-             rValue.setValue(sphere.r() * 255);
-             gValue.setValue(sphere.g() * 255);
-             bValue.setValue(sphere.b() * 255);
+            if (sphere.getMaterial() instanceof Lambertian) {
+                rValue.setMax(255);
+                gValue.setMax(255);
+                bValue.setMax(255);
+    
+                rValue.setValue(sphere.r() * 255);
+                gValue.setValue(sphere.g() * 255);
+                bValue.setValue(sphere.b() * 255);
+            }
+                
+            if (sphere.getMaterial() instanceof DiffuseLight) {
+                rValue.setMax(10);
+                gValue.setMax(10);
+                bValue.setMax(10);
+                
+                rValue.setValue(sphere.r());
+                gValue.setValue(sphere.g());
+                bValue.setValue(sphere.b());
+            }
+            
         }
         
     }
@@ -314,15 +331,16 @@ public class App extends Application {
         if (hasError) {
             return;
         }
-        
-        r = this.rValue.getValue();
-        g = this.gValue.getValue();
-        b = this.bValue.getValue();
-        
-        // Convert to absorbion
-        r = r / 255f;
-        g = g / 255f;
-        b = b / 255f;
+
+        if (sphere.getMaterial() instanceof Lambertian) {
+            r = this.rValue.getValue() / 255f;
+            g = this.gValue.getValue() / 255f;
+            b = this.bValue.getValue() / 255f;
+        } else if (sphere.getMaterial() instanceof DiffuseLight) {
+            r = this.rValue.getValue();
+            g = this.gValue.getValue();
+            b = this.bValue.getValue();
+        }
         
         sphere.setCenter(new Vec(xPos, yPos, zPos));
         sphere.setRadius(radius);

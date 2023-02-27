@@ -33,4 +33,11 @@ public class Lambertian implements Material {
     public void setColor(double r, double g, double b) {
         this.albedo.set(new Vec(r, g, b));
     }
+    
+    @Override
+    public String toString() {
+        return "Lambertian{" +
+          "albedo=" + albedo +
+          '}';
+    }
 }

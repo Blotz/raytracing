@@ -3,9 +3,9 @@ package org.openjfx;
 import java.util.Objects;
 
 public class Sphere implements Hittable {
-    Vec center;
-    double radius;
-    Material material;
+    private Vec center;
+    private double radius;
+    private Material material;
     
     public Sphere(Vec center, double radius, Material material) {
         this.center = center;
@@ -58,6 +58,16 @@ public class Sphere implements Hittable {
         return this.material.b();
     }
     
+    public Vec getCenter() {
+        return center;
+    }
+    public double getRadius() {
+        return radius;
+    }
+    public Material getMaterial() {
+        return material;
+    }
+    
     public void setColor(double r, double g, double b) {
         this.material.setColor(r, g, b);
     }
@@ -67,6 +77,7 @@ public class Sphere implements Hittable {
         return "Sphere{" +
           "center=" + center +
           ", radius=" + radius +
+          ", material=" + material +
           '}';
     }
     

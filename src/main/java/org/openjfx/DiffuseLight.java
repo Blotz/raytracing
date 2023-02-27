@@ -31,4 +31,10 @@ public class DiffuseLight implements Material {
         this.emit.set(new Vec(r, g, b));
     }
     
+    @Override
+    public String toString() {
+        return "DiffuseLight{" +
+          "emit=" + emit +
+          '}';
+    }
 }

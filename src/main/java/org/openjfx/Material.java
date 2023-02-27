@@ -7,4 +7,5 @@ public interface Material {
     double g();
     double b();
     void setColor(double r, double g, double b);
+    String toString();
 }
