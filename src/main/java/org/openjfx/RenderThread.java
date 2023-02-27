@@ -43,7 +43,7 @@ public class RenderThread extends Render implements Runnable {
         PixelWriter copyPixelWriter = copyImage.getPixelWriter();
     
         // Timeline to update the image every 100ms
-        Timeline timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(100), new EventHandler<ActionEvent>() {
+        Timeline timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(500), new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 updateImage(pixelData, copyPixelWriter, copyImage);
@@ -59,7 +59,7 @@ public class RenderThread extends Render implements Runnable {
         long s1 = System.currentTimeMillis();
         render(pixelData, x1, x2, y1, y2);
         long s2 = System.currentTimeMillis();
-        System.out.println("Render time: " + (s2 - s1) + "ms");
+        System.out.println("Total Render time: " + (s2 - s1) + "ms");
         
         // Stop the timeline and update the image one last time
         timeline.stop();

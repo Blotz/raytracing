@@ -2,8 +2,6 @@ package org.openjfx;
 
 public class Render {
     public static final double infinity = Double.POSITIVE_INFINITY;
-    public static final double pi = Math.PI;
-    
     private Camera camera;
     private HittableList world;
     
@@ -19,9 +17,10 @@ public class Render {
     public void render(int[] pixelData, int x1, int x2, int y1, int y2) {
         double[][] rawPixelData = new double[App.imageWidth * App.imageHeight][3];
         System.out.println(String.format("Rendering from (%d, %d) to (%d, %d)", x1, y1, x2, y2));
+        long start = System.currentTimeMillis();
         for (int p=1; p<=App.numPasses; ++p) {
-            System.out.println("Pass " + (p) + "/" + App.numPasses);
-            System.out.println((p * App.samplesPerPixel) + " samples per pixel");
+            System.out.print(String.format("Pass %d/%d. %d samples per pixel. ", p, App.numPasses, p*App.samplesPerPixel));
+            long s1 = System.currentTimeMillis();
             // Generating all the ray casts for the image. one per pixel atm!
             for (int j = y2 - 1; j >= y1; --j) {
                 // System.out.println();
@@ -39,7 +38,6 @@ public class Render {
                         Ray r = this.camera.getRay(u, v);
                         // Calculate the color of the pixel based on the ray
                         pixelColor = Vec.add(pixelColor, rayColor(r, world, App.maxDepth));
-                
                     }
             
             
@@ -52,9 +50,19 @@ public class Render {
                     rawPixel[2] += pixelColor.z();
                     
                     pixelData[i + (App.imageHeight - 1 - j) * App.imageWidth] =
-                      Vec.writeColor(rawPixel, App.samplesPerPixel, App.numPasses);
+                      Vec.writeColor(rawPixel, App.samplesPerPixel, p);
                 }
             }
+            long s2 = System.currentTimeMillis();
+            System.out.println(String.format("completed in: %dms", s2-s1));
+            // print predicted time to finish
+            long elapsed = s2 - start;
+            long remaining = (long) ((elapsed / (double) p) * (App.numPasses - p));
+            // convert to minutes and seconds
+            remaining /= 1000;
+            long minutes = remaining / 60;
+            long seconds = remaining % 60;
+            System.out.println(String.format("Estimated time remaining: %d:%02d", minutes, seconds));
         }
         // System.out.println(String.format("%nDone!")); // end line
         System.out.println(String.format("Finished rendering from (%d, %d) to (%d, %d)", x1, y1, x2, y2));
@@ -75,15 +83,7 @@ public class Render {
         
         if (!world.hit(r, 0.001, infinity, rec)) {
             // background color
-            return new Vec(0.01,0.01,0.01);
-            
-            // Vec unit_direction = Vec.unitVector(r.direction());
-            // double t = 0.5*(unit_direction.y() + 1.0);
-    
-            // return Vec.add(
-            //   new Vec(1.0, 1.0, 1.0).mult(1.0-t),
-            //   new Vec(0.5, 0.7, 1.0).mult(t)
-            // );
+            return new Vec(0.0,0.0,0.0);
         }
         
         // scattered ray
@@ -91,10 +91,12 @@ public class Render {
         Vec attenuation = new Vec(0,0,0);
         Vec emitted = rec.material.emitted();
         
+        // if the ray is absorbed, return the emitted color
         if (!rec.material.scatter(r, rec, attenuation, scattered)) {
             return emitted;
         }
         
+        // return the emitted color + the color of the scattered ray
         return Vec.add(emitted, Vec.mult(attenuation, rayColor(scattered, world, depth-1)));
     }
 }

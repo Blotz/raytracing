@@ -51,13 +51,19 @@ public class App extends Application {
             new Lambertian(new Vec(0.8, 0.8, 0.0))
         );
         Sphere s3 = new Sphere(
+          new Vec(0,200.5,-1),
+          100,
+          new DiffuseLight(new Vec(1,1,1))
+        );
+        Sphere s4 = new Sphere(
           new Vec(0,3,-3.5),
-          0.5,
-          new DiffuseLight(new Vec(10,10,10))
+          0.1,
+          new DiffuseLight(new Vec(100,100,100))
         );
         world.add(s1);
         world.add(s2);
         world.add(s3);
+//        world.add(s4);
     }
 
     // GUI
@@ -133,7 +139,7 @@ public class App extends Application {
     }
     @FXML
     public void renderOnButton(ActionEvent event) {
-        App.numPasses = 100;
+        App.numPasses = 10;
         App.samplesPerPixel = 100;
         App.maxDepth = 3;
         render();
