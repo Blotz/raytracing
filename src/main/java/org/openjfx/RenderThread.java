@@ -37,9 +37,4 @@ public class RenderThread extends Render implements Runnable {
         // Stop the timeline and update the image one last time
         timeline.stop();
     }
-    
-    // interrupt the thread
-    public void interrupt() {
-        Thread.currentThread().interrupt();
-    }
 }

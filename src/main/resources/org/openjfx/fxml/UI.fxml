@@ -43,7 +43,8 @@
             <Button mnemonicParsing="false" onAction="#renderSettings" prefHeight="46.0" prefWidth="121.0" text="Render Settings" />
             <Button mnemonicParsing="false" onAction="#cameraSettings" prefHeight="46.0" prefWidth="121.0" text="Camera Settings" />
             <Button mnemonicParsing="false" onAction="#sphereSettings" prefHeight="46.0" prefWidth="118.0" text="Sphere Settings" />
-            <Button mnemonicParsing="false" fx:id="cancelButton" onAction="#cancelRender" prefHeight="46.0" prefWidth="118.0" text="Cancel Render" disable="true"/>
+            <Button mnemonicParsing="false" onAction="#cancelRender" prefHeight="46.0" prefWidth="118.0" text="Cancel Render" />
+            <Button mnemonicParsing="false" onAction="#saveImage" prefHeight="46.0" prefWidth="118.0" text="Save Image" />
          </children>
       </HBox>
       <HBox prefHeight="95.0" prefWidth="921.0" VBox.vgrow="SOMETIMES">
@@ -225,7 +226,7 @@
             </Pane>
          </children>
       </HBox>
-      <BorderPane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+      <BorderPane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="SOMETIMES">
          <center>
             <ImageView fx:id="imageView" disable="true" fitHeight="330.0" fitWidth="919.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="TOP_CENTER" />
          </center>

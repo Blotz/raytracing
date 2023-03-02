@@ -6,20 +6,21 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import javafx.scene.Scene;
-import javafx.scene.Parent;
-
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.util.Duration;
-
+import javax.imageio.ImageIO;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -122,6 +123,19 @@ public class App extends Application {
     private static final String lessThanZeroError = new String("%s has to be greater than 0%n");
     
     private volatile int[] pixels = new int[imageWidth * imageHeight];
+    private WritableImage image = new WritableImage(imageWidth, imageHeight);
+    private PixelWriter pixelWriter = image.getPixelWriter();
+    private Timeline timeline;
+    {
+        // Animation loop to update image
+        timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(500), new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                updateImage(pixels, pixelWriter, image);
+            }
+        }));
+        timeline.setCycleCount(Animation.INDEFINITE);
+    }
     private static Thread renderThread;
     
     @Override
@@ -164,29 +178,18 @@ public class App extends Application {
         );
         // Sphere
         selectSphere();
+    
+        // See if render is already running
+        cancelRender();
         
         // Setup image
         imageView.setFitWidth(imageWidth);
         imageView.setFitHeight(imageHeight);
         // display image
-        WritableImage image = new WritableImage(imageWidth, imageHeight);
-        PixelWriter imageWriter = image.getPixelWriter();
+        this.image = new WritableImage(imageWidth, imageHeight);
+        this.pixelWriter = image.getPixelWriter();
         // array
-        pixels = new int[imageWidth * imageHeight];
-        
-        
-        // Animation loop to update image
-        Timeline timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(500), new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                updateImage(pixels, imageWriter, image);
-            }
-        }));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        
-        
-        // See if render is already running
-        cancelRender();
+        this.pixels = new int[imageWidth * imageHeight];
         
         // Setup render thread
         App.renderThread = new Thread(new RenderThread(
@@ -196,11 +199,10 @@ public class App extends Application {
           camPosition, camRotation,
           numPasses, samplesPerPixel, maxDepth,
           0, imageWidth, 0, imageHeight
-          ));
+        ));
     
         // Start render
-        cancelButton.setDisable(false);
-        updateImage(pixels, imageWriter, image);
+        updateImage(pixels, pixelWriter, image);
         renderThread.start();
         timeline.play();
     }
@@ -208,13 +210,31 @@ public class App extends Application {
     @FXML public void cancelRender() {
         if (renderThread != null && renderThread.isAlive()) {
             // stop render
+            timeline.stop();
+            System.out.println();
             System.out.println("Killing old render");
             renderThread.interrupt();
             renderThread.stop();  // interrupt() doesn't always work
-            if (renderThread.isAlive()) {
-                System.out.println("Failed to kill render");
+
+        }
+    }
+    
+    @FXML public void saveImage() {
+        // Save image
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Image");
+        fileChooser.getExtensionFilters().addAll(
+          new FileChooser.ExtensionFilter("PNG", "*.png"),
+          new FileChooser.ExtensionFilter("JPG", "*.jpg"),
+          new FileChooser.ExtensionFilter("BMP", "*.bmp")
+        );
+        File file = fileChooser.showSaveDialog(null);
+        if (file != null) {
+            try {
+                ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            cancelButton.setDisable(true);
         }
     }
     private void updateImage(int[] pixelData, PixelWriter pixelWriter, Image image) {
