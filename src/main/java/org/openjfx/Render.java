@@ -5,9 +5,16 @@ public class Render {
     private Camera camera;
     private HittableList world;
     
-    public Render(HittableList world, Vec camPosition, Vec camRotation) {
+    private int numPasses;
+    private int samplesPerPixel;
+    private int maxDepth;
+    
+    public Render(HittableList world, Vec camPosition, Vec camRotation, int numPasses, int samplesPerPixel, int maxDepth) {
         this.camera = new Camera(camPosition, camRotation);
         this.world = world;
+        this.numPasses = numPasses;
+        this.samplesPerPixel = samplesPerPixel;
+        this.maxDepth = maxDepth;
     }
     
     /**
@@ -18,8 +25,8 @@ public class Render {
         double[][] rawPixelData = new double[App.imageWidth * App.imageHeight][3];
         System.out.println(String.format("Rendering from (%d, %d) to (%d, %d)", x1, y1, x2, y2));
         long start = System.currentTimeMillis();
-        for (int p=1; p<=App.numPasses; ++p) {
-            System.out.print(String.format("Pass %d/%d. %d samples per pixel. ", p, App.numPasses, p*App.samplesPerPixel));
+        for (int p=1; p<=this.numPasses; ++p) {
+            System.out.print(String.format("Pass %d/%d. %d samples per pixel. ", p, this.numPasses, p*this.samplesPerPixel));
             long s1 = System.currentTimeMillis();
             // Generating all the ray casts for the image. one per pixel atm!
             for (int j = y2 - 1; j >= y1; --j) {
@@ -29,7 +36,7 @@ public class Render {
                     // storing the sum raw pixel data for compute in passes
                     double[] rawPixel = rawPixelData[i + (App.imageHeight - 1 - j) * App.imageWidth];
                     
-                    for (int s = 0; s < App.samplesPerPixel; ++s) {
+                    for (int s = 0; s < this.samplesPerPixel; ++s) {
                         // u and v are the offset from the center of the viewport
                         // Camara is at (0,0,0) and the viewport is centered at (0,0,1)
                         // u and v are floats between 0 and 1 and represent the percentage of the viewport
@@ -39,7 +46,7 @@ public class Render {
                         // ray from the camera to the pixel
                         Ray r = this.camera.getRay(u, v);
                         // Calculate the color of the pixel based on the ray
-                        Vec color = rayColor(r, world, App.maxDepth);
+                        Vec color = rayColor(r, world, this.maxDepth);
                         
                         rawPixel[0] += color.x();
                         rawPixel[1] += color.y();
@@ -48,14 +55,14 @@ public class Render {
             
             
                     // Write that color to the pixel
-                    pixelData[i + (App.imageHeight - 1 - j) * App.imageWidth] = Vec.writeColor(rawPixel, App.samplesPerPixel, p);
+                    pixelData[i + (App.imageHeight - 1 - j) * App.imageWidth] = Vec.writeColor(rawPixel, this.samplesPerPixel, p);
                 }
             }
             long s2 = System.currentTimeMillis();
             System.out.println(String.format("completed in: %dms", s2-s1));
             // print predicted time to finish
             long elapsed = s2 - start;
-            long remaining = (long) ((elapsed / (double) p) * (App.numPasses - p));
+            long remaining = (long) ((elapsed / (double) p) * (this.numPasses - p));
             // convert to minutes and seconds
             remaining /= 1000;
             long minutes = remaining / 60;

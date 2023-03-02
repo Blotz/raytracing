@@ -10,5 +10,7 @@ public interface Hittable {
      * @return true if the ray hits the object
      */
     boolean hit(Ray r, double tMin, double tMax, HitRecord rec);
+    
+    void setMaterial(Material value);
 }
 

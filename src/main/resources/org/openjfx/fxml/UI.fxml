@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="496.0" prefWidth="921.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.App">
+   <children>
+      <MenuBar>
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <HBox prefHeight="46.0" prefWidth="600.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#render" prefHeight="48.0" prefWidth="80.0" text="Render" HBox.hgrow="SOMETIMES" />
+            <Button mnemonicParsing="false" onAction="#sceneSettings" prefHeight="46.0" prefWidth="116.0" text="Scene Settings" />
+            <Button mnemonicParsing="false" onAction="#renderSettings" prefHeight="46.0" prefWidth="121.0" text="Render Settings" />
+            <Button mnemonicParsing="false" onAction="#cameraSettings" prefHeight="46.0" prefWidth="121.0" text="Camera Settings" />
+            <Button mnemonicParsing="false" onAction="#sphereSettings" prefHeight="46.0" prefWidth="118.0" text="Sphere Settings" />
+            <Button mnemonicParsing="false" fx:id="cancelButton" onAction="#cancelRender" prefHeight="46.0" prefWidth="118.0" text="Cancel Render" disable="true"/>
+         </children>
+      </HBox>
+      <HBox prefHeight="95.0" prefWidth="921.0" VBox.vgrow="SOMETIMES">
+         <children>
+            <Pane prefHeight="104.0" prefWidth="921.0">
+               <children>
+                  <HBox fx:id="sceneSettings" prefHeight="54.0" prefWidth="536.0" visible="false">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Scene" wrappingWidth="64.13000106811523" />
+                        <RadioButton fx:id="sceneButton1" mnemonicParsing="false" onAction="#selectScene1" selected="true" text="Scene 1" />
+                        <RadioButton fx:id="sceneButton2" mnemonicParsing="false" onAction="#selectScene2" text="Scene 2" />
+                        <RadioButton fx:id="sceneButton3" mnemonicParsing="false" onAction="#selectScene3" text="Scene 3" />
+                     </children>
+                  </HBox>
+                  <HBox fx:id="renderSettings" prefHeight="54.0" prefWidth="850.0" visible="false">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Render" wrappingWidth="64.13000106811523" />
+                        <VBox prefHeight="54.0" prefWidth="177.0">
+                           <children>
+                              <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Samples" />
+                                    <TextField fx:id="samplesPerPixel" onAction="#validNumOfSamples" text="50" />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="100.0" prefWidth="162.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Passes" />
+                                    <TextField fx:id="numPasses" onAction="#validNumOfPasses" text="2" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="54.0" prefWidth="199.0">
+                           <children>
+                              <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Ray Bounces" />
+                                    <TextField fx:id="maxDepth" onAction="#validMaxDepth" text="2" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="54.0" prefWidth="182.0">
+                           <children>
+                              <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="width" />
+                                    <TextField fx:id="imageWidthField" onAction="#validImageWidth" text="1000" />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="height" />
+                                    <TextField fx:id="imageHeightField" onAction="#validImageHeight" text="1000" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox fx:id="cameraSettings" prefHeight="78.0" prefWidth="536.0" visible="false">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Camera " wrappingWidth="68.03799819946289" />
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="X Position" />
+                                    <TextField onAction="#validXCam" text="0" fx:id="xCam" />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Y Position" />
+                                    <TextField fx:id="yCam" onAction="#validYCam" text="0" />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Z Position" />
+                                    <TextField fx:id="zCam" onAction="#validZCam" text="0" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Pitch" />
+                                    <TextField fx:id="pitch" onAction="#validPitch" text="0" />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Yaw" />
+                                    <TextField fx:id="yaw" onAction="#validYaw" text="0" />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Roll" />
+                                    <TextField fx:id="roll" onAction="#validRoll" text="0" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox fx:id="sphereSettings" prefHeight="104.0" prefWidth="919.0" visible="false">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Sphere" wrappingWidth="64.13000106811523" />
+                        <VBox prefHeight="54.0" prefWidth="140.0">
+                           <children>
+                              <ComboBox fx:id="sphereSelect" onAction="#selectSphere" onShowing="#getSphereDropDown" prefWidth="150.0" promptText="Sphere Select" />
+                              <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Button mnemonicParsing="false" onAction="#deleteSphere" text="delete" />
+                                    <Button mnemonicParsing="false" onAction="#newSphere" text="new" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <ComboBox fx:id="materialSelect" onAction="#selectMaterial" onShowing="#getMaterialDropDown" prefHeight="26.0" prefWidth="108.0" promptText="Material" />
+                        <VBox prefHeight="54.0" prefWidth="154.0">
+                           <children>
+                              <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="R" />
+                                    <Slider fx:id="rValue" />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="G" />
+                                    <Slider fx:id="gValue" />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="B" />
+                                    <Slider fx:id="bValue" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="78.0" prefWidth="97.0">
+                           <children>
+                              <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="X Pos" />
+                                    <TextField onAction="#validXSphere" text="0.0" fx:id="xSphere" />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Y Pos" />
+                                    <TextField fx:id="ySphere" onAction="#validYSphere" text="0.0" />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Z Pos" />
+                                    <TextField fx:id="zSphere" onAction="#validZSphere" text="0.0" />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Radius" />
+                                    <TextField fx:id="radius" onAction="#validRadius" text="0" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </Pane>
+         </children>
+      </HBox>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+         <center>
+            <ImageView fx:id="imageView" disable="true" fitHeight="330.0" fitWidth="919.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="TOP_CENTER" />
+         </center>
+      </BorderPane>
+   </children>
+</VBox>

@@ -43,7 +43,7 @@ public class HittableList {
         return hitAnything;
     }
     
-    public void remove(Sphere sphere) {
-        objects.remove(sphere);
+    public void remove(Hittable object) {
+        objects.remove(object);
     }
 }

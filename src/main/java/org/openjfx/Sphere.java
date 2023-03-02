@@ -47,6 +47,10 @@ public class Sphere implements Hittable {
         
         return true;
     }
+    @Override
+    public void setMaterial(Material value) {
+        this.material = value;
+    }
     
     public double r() {
         return this.material.r();
