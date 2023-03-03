@@ -103,6 +103,9 @@ public class App extends Application {
     @FXML private Slider rValue;
     @FXML private Slider gValue;
     @FXML private Slider bValue;
+    // Metal specific
+    @FXML private HBox metalSettings;
+    @FXML private TextField fuzzField;
     // position
     @FXML private TextField xSphere;
     @FXML private TextField ySphere;
@@ -417,12 +420,20 @@ public class App extends Application {
             showErrorMessage(e.getMessage());
         }
     }
+    @FXML public void validMetalFuzz() {
+        try {
+            parseDouble("fuzz", fuzzField);
+        } catch (IllegalArgumentException e) {
+            showErrorMessage(e.getMessage());
+        }
+    }
     // drop down
     @FXML public void getMaterialDropDown() {
         // get all classes that are subclasses of Material
         ArrayList<Material> classes = new ArrayList<Material>();
         classes.add(Material.LAMBERTIAN);
         classes.add(Material.DIFFUSE_LIGHT);
+        classes.add(Material.METAL);
     
         ObservableList<Material> materialList = FXCollections.observableArrayList(classes);
         materialSelect.setItems(materialList);
@@ -458,6 +469,8 @@ public class App extends Application {
                 material = new Lambertian(new Vec(rValue.getValue(), gValue.getValue(), bValue.getValue()));
             } else if ( materialType instanceof DiffuseLight ) {
                 material = new DiffuseLight(new Vec(rValue.getValue(), gValue.getValue(), bValue.getValue()));
+            } else if ( materialType instanceof Metal ) {
+                material = new Metal(new Vec(rValue.getValue(), gValue.getValue(), bValue.getValue()), parseDouble("fuzz", fuzzField));
             } else {
                 throw new IllegalArgumentException("Invalid material selected");
             }
@@ -478,10 +491,23 @@ public class App extends Application {
             rValue.setMax(10);
             gValue.setMax(10);
             bValue.setMax(10);
+            metalSettings.setDisable(true);
+            metalSettings.setVisible(false);
+        } else if (material instanceof Metal) {
+            rValue.setMax(1);
+            gValue.setMax(1);
+            bValue.setMax(1);
+            metalSettings.setDisable(false);
+            metalSettings.setVisible(true);
+            
+            Metal metal = (Metal) material;
+            fuzzField.setText(Double.toString(metal.getFuzz()));
         } else {
             rValue.setMax(1);
             gValue.setMax(1);
             bValue.setMax(1);
+            metalSettings.setDisable(true);
+            metalSettings.setVisible(false);
         }
         
         Hittable object = sphereSelect.getValue();
@@ -532,6 +558,8 @@ public class App extends Application {
         Sphere sphere = new Sphere(new Vec(0, 0, 0), 1, new Lambertian(new Vec(0.5, 0.5, 0.5)));
         this.scenes[sceneSelected].add(sphere);
         getSphereDropDown();
+        sphereSelect.setValue(sphere);
+        selectSphere();
     }
     
     // helper functions

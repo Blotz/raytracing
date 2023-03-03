@@ -194,6 +194,16 @@
                         </VBox>
                         <VBox prefHeight="78.0" prefWidth="97.0">
                            <children>
+                              <HBox prefHeight="100.0" prefWidth="200.0" fx:id="metalSettings" visible="false">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="FuzzField" />
+                                    <TextField onAction="#validMetalFuzz" text="0.0" fx:id="fuzzField" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="78.0" prefWidth="97.0">
+                           <children>
                               <HBox prefHeight="100.0" prefWidth="200.0">
                                  <children>
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="X Pos" />
