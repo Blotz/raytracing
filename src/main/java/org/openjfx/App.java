@@ -52,9 +52,41 @@ public class App extends Application {
     
     // Scene settings
     private int sceneSelected = 1;
-    private HittableList scene0 = new HittableList();
+    private HittableList scene0 = new HittableList(); // empty scene
     @FXML private RadioButton sceneButton1;
     private HittableList scene1 = new HittableList();
+    {
+        // Cornell box
+        // left
+        Sphere s1 = new Sphere(new Vec(1e5+1, 40.8, 81.6), 1e5, new Lambertian(new Vec(0.75, 0.25, 0.25)));
+        // right
+        Sphere s2 = new Sphere(new Vec(-1e5+99, 40.8, 81.6), 1e5, new Lambertian(new Vec(0.25, 0.25, 0.75)));
+        // back
+        Sphere s3 = new Sphere(new Vec(50, 40.8, 1e5), 1e5, new Lambertian(new Vec(0.75, 0.75, 0.75)));
+        // front
+        Sphere s4 = new Sphere(new Vec(50, 40.8, -1e5+170), 1e5, new Lambertian(new Vec(0.0, 0.0, 0.0)));
+        // bottom
+        Sphere s5 = new Sphere(new Vec(50, 1e5, 81.6), 1e5, new Lambertian(new Vec(0.75, 0.75, 0.75)));
+        // top
+        Sphere s6 = new Sphere(new Vec(50, -1e5+81.6, 81.6), 1e5, new Lambertian(new Vec(0.75, 0.75, 0.75)));
+        
+        Sphere s7 = new Sphere(new Vec(27, 16.5, 47), 16.5, new Metal(new Vec(0.8, 0.8, 0.9), 0.1));
+        Sphere s8 = new Sphere(new Vec(73, 16.5, 78), 16.5, new Dielectric(new Vec(1,1,1),1.5));
+        Sphere s9 = new Sphere(new Vec(50, 681.6-.27, 81.6), 600, new DiffuseLight(new Vec(12, 12, 12)));
+        
+        
+        scene1.add(s1);
+        scene1.add(s2);
+        scene1.add(s3);
+        scene1.add(s4);
+        scene1.add(s5);
+        scene1.add(s6);
+        scene1.add(s7);
+        scene1.add(s8);
+        scene1.add(s9);
+        
+        // camera 50, 52, 160
+    }
     @FXML private RadioButton sceneButton2;
     private HittableList scene2 = new HittableList();
     {
@@ -508,9 +540,9 @@ public class App extends Application {
         }
         
         if (material instanceof DiffuseLight) {
-            rValue.setMax(10);
-            gValue.setMax(10);
-            bValue.setMax(10);
+            rValue.setMax(15);
+            gValue.setMax(15);
+            bValue.setMax(15);
             metalSettings.setDisable(true);
             metalSettings.setVisible(false);
             refractionSettings.setDisable(true);

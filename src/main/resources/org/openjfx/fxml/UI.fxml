@@ -51,10 +51,10 @@
          <children>
             <Pane prefHeight="104.0" prefWidth="921.0">
                <children>
-                  <HBox fx:id="sceneSettings" prefHeight="54.0" prefWidth="536.0" visible="false">
+                  <HBox fx:id="sceneSettings" prefHeight="54.0" prefWidth="536.0" visible="true">
                      <children>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Scene" wrappingWidth="64.13000106811523" />
-                        <RadioButton fx:id="sceneButton1" mnemonicParsing="false" onAction="#selectScene1" selected="true" text="Scene 1" />
+                        <RadioButton fx:id="sceneButton1" mnemonicParsing="false" onAction="#selectScene1" text="Scene 1" />
                         <RadioButton fx:id="sceneButton2" mnemonicParsing="false" onAction="#selectScene2" text="Scene 2" />
                         <RadioButton fx:id="sceneButton3" mnemonicParsing="false" onAction="#selectScene3" text="Scene 3" />
                      </children>
@@ -67,13 +67,13 @@
                               <HBox prefHeight="100.0" prefWidth="200.0">
                                  <children>
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Samples" />
-                                    <TextField fx:id="samplesPerPixel" onAction="#validNumOfSamples" text="50" />
+                                    <TextField fx:id="samplesPerPixel" onAction="#validNumOfSamples" text="10" />
                                  </children>
                               </HBox>
                               <HBox prefHeight="100.0" prefWidth="162.0">
                                  <children>
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Passes" />
-                                    <TextField fx:id="numPasses" onAction="#validNumOfPasses" text="2" />
+                                    <TextField fx:id="numPasses" onAction="#validNumOfPasses" text="100" />
                                  </children>
                               </HBox>
                            </children>
@@ -83,7 +83,7 @@
                               <HBox prefHeight="100.0" prefWidth="200.0">
                                  <children>
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Ray Bounces" />
-                                    <TextField fx:id="maxDepth" onAction="#validMaxDepth" text="2" />
+                                    <TextField fx:id="maxDepth" onAction="#validMaxDepth" text="5" />
                                  </children>
                               </HBox>
                            </children>
@@ -114,19 +114,19 @@
                               <HBox prefHeight="100.0" prefWidth="200.0">
                                  <children>
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="X Position" />
-                                    <TextField onAction="#validXCam" text="0" fx:id="xCam" />
+                                    <TextField onAction="#validXCam" text="50.0" fx:id="xCam" />
                                  </children>
                               </HBox>
                               <HBox prefHeight="100.0" prefWidth="200.0">
                                  <children>
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Y Position" />
-                                    <TextField fx:id="yCam" onAction="#validYCam" text="0" />
+                                    <TextField fx:id="yCam" onAction="#validYCam" text="52.0" />
                                  </children>
                               </HBox>
                               <HBox prefHeight="100.0" prefWidth="200.0">
                                  <children>
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Z Position" />
-                                    <TextField fx:id="zCam" onAction="#validZCam" text="0" />
+                                    <TextField fx:id="zCam" onAction="#validZCam" text="160.0" />
                                  </children>
                               </HBox>
                            </children>
