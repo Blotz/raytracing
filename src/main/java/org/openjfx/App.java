@@ -90,21 +90,21 @@ public class App extends Application {
     @FXML private RadioButton sceneButton2;
     private HittableList scene2 = new HittableList();
     {
-        // Generating a scene which shows a view of saturn's rings
+        // Generating a scene which shows a view of saturn.png's rings
         // sun
         Vec sunCenter = new Vec(300,52,0); // center of the sun
         double sunRadius = 50; // radius of the sun
         Vec sunColor = new Vec(5,5,5); // color of the sun
         Sphere sun = new Sphere(sunCenter, sunRadius, new DiffuseLight(sunColor));
         scene2.add(sun);
-        // saturn
+        // saturn.png
         Vec center = new Vec(50,52,60); // center of the rings
-        double saturnRadius = 10; // radius of saturn
+        double saturnRadius = 10; // radius of saturn.png
         Vec saturnColor = new Vec(
           (234.0/255.0),
           (214.0/255.0),
           (184.0/255.0)
-        ); // color of saturn
+        ); // color of saturn.png
         Sphere saturn = new Sphere(center, saturnRadius, new Lambertian(saturnColor));
         scene2.add(saturn);
         
