@@ -12,13 +12,27 @@ public class Metal implements Material {
     }
     @Override
     public boolean scatter(Ray rayIn, HitRecord hitRecord, Vec attenuation, Ray scattered) {
+        // get the reflected ray
         Vec reflected = reflect(Vec.unitVector(rayIn.direction()), hitRecord.normal);
+        // set the scattered ray to the reflected ray plus a random vector
         scattered.set(hitRecord.p, reflected.add(Vec.randomInUnitSphere().mult(fuzz)));
+        // set color
         attenuation.set(albedo);
-        return Vec.dot(scattered.direction(), hitRecord.normal) > 0;
+        
+        // if the dot product of the scattered ray and the normal is less than 0
+        // then the ray is pointing into the surface
+        // so we don't want to scatter the ray
+        return Vec.dot(scattered.direction(), hitRecord.normal) > 0;  // v1 dot v2 == cos(theta)
     }
     
     private static Vec reflect(Vec v, Vec n) {
+        // b is v dot normal
+        // v is the incoming ray
+        
+        // reflection direction = v + 2( v dot n ) * n
+        // use -v instead of v because we are reflecting the ray
+        // -v + 2( -v dot n ) * n = v - 2( v dot n ) * n
+        
         return Vec.sub(v, (Vec.mult(n, 2f * Vec.dot(v,n))));
     }
     
