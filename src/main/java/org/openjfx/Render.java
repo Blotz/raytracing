@@ -19,6 +19,7 @@ public class Render {
     
     /**
      * Render the image
+     *
      * @param pixelData Image to render
      */
     public void render(int[] pixelData, int x1, int x2, int y1, int y2) {
@@ -32,6 +33,12 @@ public class Render {
             for (int j = y2 - 1; j >= y1; --j) {
                 // System.out.println();
                 // System.out.print(String.format("\rScanlines remaining: %d ", j));
+                // check if the render thread is still running]
+                if (!RenderThread.getIsRunning()) {
+                    System.out.println("Render thread stopped");
+                    return;
+                }
+                
                 for (int i = x1; i < x2; ++i) {
                     // storing the sum raw pixel data for compute in passes
                     double[] rawPixel = rawPixelData[i + (App.imageHeight - 1 - j) * App.imageWidth];

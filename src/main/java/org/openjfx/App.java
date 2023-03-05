@@ -213,11 +213,18 @@ public class App extends Application {
     @FXML public void cancelRender() {
         if (renderThread != null && renderThread.isAlive()) {
             // stop render
-            timeline.stop();
             System.out.println();
             System.out.println("Killing old render");
-            renderThread.interrupt();
-            renderThread.stop();  // interrupt() doesn't always work
+            RenderThread.stop();
+            // wait for render to stop
+            try {
+                renderThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            // stop animation
+            timeline.stop();
+            System.out.println("Old render killed");
 
         }
     }

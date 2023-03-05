@@ -9,6 +9,7 @@ public class RenderThread extends Render implements Runnable {
     private int x2;
     private int y1;
     private int y2;
+    private static volatile boolean isRunning = false;  // using a Boolean object, so we can pass it by reference
     
     public RenderThread(
       Timeline timeline,
@@ -29,12 +30,23 @@ public class RenderThread extends Render implements Runnable {
     
     @Override
     public void run() {
+        RenderThread.isRunning = true;
         long s1 = System.currentTimeMillis();
         render(pixelData, x1, x2, y1, y2);
         long s2 = System.currentTimeMillis();
         System.out.println("Total Render time: " + (s2 - s1) + "ms");
+        RenderThread.isRunning = false;
         
         // Stop the timeline and update the image one last time
         timeline.stop();
+    }
+    
+    public static boolean getIsRunning() {
+        return RenderThread.isRunning;
+    }
+    
+    public static void stop() {
+        RenderThread.isRunning = false;
+        System.out.println("Render thread stopped" + RenderThread.isRunning);
     }
 }
