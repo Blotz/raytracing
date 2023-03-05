@@ -54,7 +54,7 @@
                   <HBox fx:id="sceneSettings" prefHeight="54.0" prefWidth="536.0" visible="true">
                      <children>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Scene" wrappingWidth="64.13000106811523" />
-                        <RadioButton fx:id="sceneButton1" mnemonicParsing="false" onAction="#selectScene1" text="Scene 1" />
+                        <RadioButton fx:id="sceneButton1" mnemonicParsing="false" onAction="#selectScene1" text="Scene 1" selected="true"/>
                         <RadioButton fx:id="sceneButton2" mnemonicParsing="false" onAction="#selectScene2" text="Scene 2" />
                         <RadioButton fx:id="sceneButton3" mnemonicParsing="false" onAction="#selectScene3" text="Scene 3" />
                      </children>

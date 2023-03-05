@@ -90,6 +90,70 @@ public class App extends Application {
     @FXML private RadioButton sceneButton2;
     private HittableList scene2 = new HittableList();
     {
+        // Generating a scene which shows a view of saturn's rings
+        // sun
+        Vec sunCenter = new Vec(300,52,0); // center of the sun
+        double sunRadius = 50; // radius of the sun
+        Vec sunColor = new Vec(5,5,5); // color of the sun
+        Sphere sun = new Sphere(sunCenter, sunRadius, new DiffuseLight(sunColor));
+        scene2.add(sun);
+        // saturn
+        Vec center = new Vec(50,52,60); // center of the rings
+        double saturnRadius = 10; // radius of saturn
+        Vec saturnColor = new Vec(
+          (234.0/255.0),
+          (214.0/255.0),
+          (184.0/255.0)
+        ); // color of saturn
+        Sphere saturn = new Sphere(center, saturnRadius, new Lambertian(saturnColor));
+        scene2.add(saturn);
+        
+        double minRingRadius = 30; // radius of the rings
+        double maxRingRadius = 70; // radius of the rings
+        double ringThickness = 0.1; // thickness of the rings
+        
+        Vec ringAngle = new Vec(Math.toRadians(10),0,Math.toRadians(15)); // angle of the rings
+        
+        double ringSize = 1.0; // size of asteroids in the rings
+        double numRings = 1; // number of rings
+        
+        // creating the rings
+        // rotate around center
+        for (int i = 0; i < 360*numRings; i++) {
+            // i is the yaw angle
+            // distance from the center
+            double distance = Math.random() * (maxRingRadius - minRingRadius) + minRingRadius;
+            double height = Math.random() * ringThickness - ringThickness/2;
+            
+            // distance from the center
+            Vec directionFromCenter = new Vec(
+              Math.cos(Math.toRadians(i)),
+              height,
+              Math.sin(Math.toRadians(i))
+            );
+            // rotate around the center
+            directionFromCenter = Vec.rotate(ringAngle, directionFromCenter);
+            // position of the asteroid
+            Vec position = Vec.add(center, Vec.mult(directionFromCenter, distance));
+            
+            // Generate random brown color
+            Vec color = new Vec(
+              Math.random() * 0.1 + (112.0/255.0),
+              Math.random() * 0.1 + (128.0/255.0),
+              Math.random() * 0.1 + (144/255.0)
+            );
+            
+            Sphere asteroid = new Sphere(position, ringSize, new Lambertian(color));
+            scene2.add(asteroid);
+        }
+        
+        
+        
+        
+    }
+    @FXML private RadioButton sceneButton3;
+    private HittableList scene3 = new HittableList();
+    {
         Sphere s1 = new Sphere(
           new Vec(0,0,-4),
           0.5,
@@ -110,13 +174,11 @@ public class App extends Application {
           1,
           new DiffuseLight(new Vec(10,10,10))
         );
-        scene2.add(s1);
-        scene2.add(s2);
-//        scene2.add(s3);
-        scene2.add(s4);
+        scene3.add(s1);
+        scene3.add(s2);
+//        scene3.add(s3);
+        scene3.add(s4);
     }
-    @FXML private RadioButton sceneButton3;
-    private HittableList scene3 = new HittableList();
     private HittableList[] scenes = {scene0, scene1, scene2, scene3};
     
     // Render settings

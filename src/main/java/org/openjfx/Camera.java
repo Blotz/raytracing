@@ -23,9 +23,9 @@ public class Camera {
           .sub(new Vec(0, 0, focalLength));
     
         // Rotate the viewport
-        horizontal      = rotate(this.camRotation, horizontal);
-        vertical        = rotate(this.camRotation, vertical);
-        lowerLeftCorner = rotate(this.camRotation, lowerLeftCorner);
+        horizontal      = Vec.rotate(this.camRotation, horizontal);
+        vertical        = Vec.rotate(this.camRotation, vertical);
+        lowerLeftCorner = Vec.rotate(this.camRotation, lowerLeftCorner);
     }
     
     
@@ -48,52 +48,4 @@ public class Camera {
         // direction = rotate(direction);
         return new Ray(this.camPosition, direction);
     }
-    
-    /**
-     * Rotate a vector
-     * @param rotation pitch yaw roll
-     * @param direction vector to rotate
-     * @return
-     */
-    private static Vec rotate(Vec rotation, Vec direction) {
-        // rotate pitch yaw roll
-        // https://en.wikipedia.org/wiki/Rotation_matrix#General_rotations
-        // https://en.wikipedia.org/wiki/Euler_angles#Rotation_matrix
-        // https://en.wikipedia.org/wiki/Rotation_matrix#In_three_dimensions
-        
-        double pitch = rotation.x();
-        double yaw   = rotation.y();
-        double roll  = rotation.z();
-        
-        double sinPitch = Math.sin(pitch);
-        double cosPitch = Math.cos(pitch);
-        
-        double sinYaw = Math.sin(yaw);
-        double cosYaw = Math.cos(yaw);
-        
-        double sinRoll = Math.sin(roll);
-        double cosRoll = Math.cos(roll);
-        
-        double x = direction.x();
-        double y = direction.y();
-        double z = direction.z();
-        
-        // pitch
-        double x1 = x;
-        double y1 = y * cosPitch - z * sinPitch;
-        double z1 = y * sinPitch + z * cosPitch;
-        
-        // yaw
-        double x2 = x1 * cosYaw + z1 * sinYaw;
-        double y2 = y1;
-        double z2 = -x1 * sinYaw + z1 * cosYaw;
-        
-        // roll
-        double x3 = x2 * cosRoll - y2 * sinRoll;
-        double y3 = x2 * sinRoll + y2 * cosRoll;
-        double z3 = z2;
-        
-        return new Vec(x3, y3, z3);
-    }
-    
 }

@@ -96,6 +96,7 @@ public class Render {
         if (!world.hit(r, 0.001, infinity, rec)) {
             // background color
             return new Vec(0.0,0.0,0.0);
+//            return new Vec(0.7,0.7,0.7);
         }
         
         // scattered ray
