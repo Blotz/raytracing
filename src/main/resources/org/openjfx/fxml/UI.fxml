@@ -132,22 +132,26 @@
                            </children>
                         </VBox>
                         <VBox prefHeight="200.0" prefWidth="100.0">
+                           <RadioButton fx:id="pitchyawroll" mnemonicParsing="false" onAction="#selectPitchYawRoll" text="Pitch Yaw Roll" selected="true"/>
+                           <RadioButton fx:id="lookat" mnemonicParsing="false" onAction="#selectLookAt" text="Look at" />
+                        </VBox>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
                            <children>
                               <HBox prefHeight="100.0" prefWidth="200.0">
                                  <children>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Pitch" />
+                                    <Text fx:id="pitchText" strokeType="OUTSIDE" strokeWidth="0.0" text="Pitch" />
                                     <TextField fx:id="pitch" onAction="#validPitch" text="0" />
                                  </children>
                               </HBox>
                               <HBox prefHeight="100.0" prefWidth="200.0">
                                  <children>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Yaw" />
+                                    <Text fx:id="yawText" strokeType="OUTSIDE" strokeWidth="0.0" text="Yaw" />
                                     <TextField fx:id="yaw" onAction="#validYaw" text="0" />
                                  </children>
                               </HBox>
                               <HBox prefHeight="100.0" prefWidth="200.0">
                                  <children>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Roll" />
+                                    <Text fx:id="rollText" strokeType="OUTSIDE" strokeWidth="0.0" text="Roll" />
                                     <TextField fx:id="roll" onAction="#validRoll" text="0" />
                                  </children>
                               </HBox>

@@ -18,6 +18,7 @@ import javafx.scene.image.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.scene.text.Text;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -44,11 +45,11 @@ public class App extends Application {
     @FXML private Button cancelButton;
     @FXML private ImageView imageView;
     
+    // General settings
     @FXML private HBox sceneSettings;
     @FXML private HBox renderSettings;
     @FXML private HBox cameraSettings;
     @FXML private HBox sphereSettings;
-    
     
     // Scene settings
     private int sceneSelected = 1;
@@ -216,6 +217,12 @@ public class App extends Application {
     @FXML private TextField pitch;
     @FXML private TextField yaw;
     @FXML private TextField roll;
+    @FXML private Text pitchText;
+    @FXML private Text yawText;
+    @FXML private Text rollText;
+    private boolean isLookAt = false;
+    @FXML private RadioButton pitchyawroll;
+    @FXML private RadioButton lookat;
     
     private static final String emptyError = new String("%s cannot be empty%n");
     private static final String integerValueError = new String("%s has to be an integer%n");
@@ -296,7 +303,7 @@ public class App extends Application {
           timeline,
           pixels,
           world,
-          camPosition, camRotation,
+          camPosition, camRotation, isLookAt,
           numPasses, samplesPerPixel, maxDepth,
           0, imageWidth, 0, imageHeight
         ));
@@ -475,24 +482,68 @@ public class App extends Application {
     }
     @FXML public void validPitch() {
         try {
-            parseDouble("pitch", pitch);
+            String name;
+            if (isLookAt) {
+                name = "look at x";
+            } else {
+                name = "pitch";
+            }
+            parseDouble(name, pitch);
         } catch (IllegalArgumentException e) {
             showErrorMessage(e.getMessage());
         }
     }
     @FXML public void validYaw() {
         try {
-            parseDouble("yaw", yaw);
+            String name;
+            if (isLookAt) {
+                name = "look at y";
+            } else {
+                name = "yaw";
+            }
+            parseDouble(name, yaw);
         } catch (IllegalArgumentException e) {
             showErrorMessage(e.getMessage());
         }
     }
     @FXML public void validRoll() {
         try {
-            parseDouble("roll", roll);
+            String name;
+            if (isLookAt) {
+                name = "look at z";
+            } else {
+                name = "roll";
+            }
+            parseDouble(name, roll);
         } catch (IllegalArgumentException e) {
             showErrorMessage(e.getMessage());
         }
+    }
+    @FXML public void selectPitchYawRoll() {
+        System.out.println("Pitch, yaw, roll");
+        if (!pitchyawroll.isSelected()) {
+            this.pitchyawroll.setSelected(true);
+            return;
+        }
+        this.isLookAt = false;
+        this.lookat.setSelected(false);
+        // update labels
+        this.pitchText.setText("Pitch");
+        this.yawText.setText("Yaw");
+        this.rollText.setText("Roll");
+    }
+    @FXML public void selectLookAt() {
+        System.out.println("Look at");
+        if (!lookat.isSelected()) {
+            this.lookat.setSelected(true);
+            return;
+        }
+        this.isLookAt = true;
+        this.pitchyawroll.setSelected(false);
+        // update labels
+        this.pitchText.setText("Look at x");
+        this.yawText.setText("Look at y");
+        this.rollText.setText("Look at z");
     }
     
     // Sphere Settings

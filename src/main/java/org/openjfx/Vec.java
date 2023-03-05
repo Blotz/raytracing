@@ -222,4 +222,8 @@ public class Vec {
         
         return new Vec(x3, y3, z3);
     }
+    public Vec normalize() {
+        double length = length();
+        return new Vec(x / length, y / length, z / length);
+    }
 }

@@ -15,11 +15,11 @@ public class RenderThread extends Render implements Runnable {
       Timeline timeline,
       int[] pixelData,
       HittableList world,
-      Vec camPosition, Vec camRotation,
+      Vec camPosition, Vec camRotation, boolean isLookAt,
       int numPasses, int samplesPerPixel, int maxDepth,
       int x1, int x2, int y1, int y2
     ) {
-        super(world, camPosition, camRotation, numPasses, samplesPerPixel, maxDepth);
+        super(world, camPosition, camRotation, isLookAt, numPasses, samplesPerPixel, maxDepth);
         this.timeline = timeline;
         this.pixelData = pixelData;
         this.x1 = x1;

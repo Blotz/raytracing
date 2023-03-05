@@ -9,8 +9,8 @@ public class Render {
     private int samplesPerPixel;
     private int maxDepth;
     
-    public Render(HittableList world, Vec camPosition, Vec camRotation, int numPasses, int samplesPerPixel, int maxDepth) {
-        this.camera = new Camera(camPosition, camRotation);
+    public Render(HittableList world, Vec camPosition, Vec camRotation, boolean isLookAt, int numPasses, int samplesPerPixel, int maxDepth) {
+        this.camera = new Camera(camPosition, camRotation, isLookAt);
         this.world = world;
         this.numPasses = numPasses;
         this.samplesPerPixel = samplesPerPixel;
