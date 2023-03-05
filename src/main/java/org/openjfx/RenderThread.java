@@ -9,7 +9,7 @@ public class RenderThread extends Render implements Runnable {
     private int x2;
     private int y1;
     private int y2;
-    private static volatile boolean isRunning = false;  // using a Boolean object, so we can pass it by reference
+    private static boolean isRunning = false;
     
     public RenderThread(
       Timeline timeline,
