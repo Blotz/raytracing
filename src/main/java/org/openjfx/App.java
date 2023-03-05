@@ -106,6 +106,9 @@ public class App extends Application {
     // Metal specific
     @FXML private HBox metalSettings;
     @FXML private TextField fuzzField;
+    // Dielectric specific
+    @FXML private HBox refractionSettings;
+    @FXML private TextField refractIndexField;
     // position
     @FXML private TextField xSphere;
     @FXML private TextField ySphere;
@@ -434,14 +437,22 @@ public class App extends Application {
             showErrorMessage(e.getMessage());
         }
     }
+    @FXML public void validRefractiveIndex() {
+        try {
+            parseDouble("refractive index", refractIndexField);
+        } catch (IllegalArgumentException e) {
+            showErrorMessage(e.getMessage());
+        }
+    }
     // drop down
     @FXML public void getMaterialDropDown() {
         // get all classes that are subclasses of Material
         ArrayList<Material> classes = new ArrayList<Material>();
         classes.add(Material.LAMBERTIAN);
-        classes.add(Material.DIFFUSE_LIGHT);
         classes.add(Material.METAL);
-    
+        classes.add(Material.DIELECTRIC);
+        classes.add(Material.DIFFUSE_LIGHT);
+        
         ObservableList<Material> materialList = FXCollections.observableArrayList(classes);
         materialSelect.setItems(materialList);
     }
@@ -478,6 +489,8 @@ public class App extends Application {
                 material = new DiffuseLight(new Vec(rValue.getValue(), gValue.getValue(), bValue.getValue()));
             } else if ( materialType instanceof Metal ) {
                 material = new Metal(new Vec(rValue.getValue(), gValue.getValue(), bValue.getValue()), parseDouble("fuzz", fuzzField));
+            } else if ( materialType instanceof Dielectric ) {
+                material = new Dielectric(new Vec(rValue.getValue(), gValue.getValue(), bValue.getValue()), parseDouble("refractive index", refractIndexField));
             } else {
                 throw new IllegalArgumentException("Invalid material selected");
             }
@@ -500,21 +513,38 @@ public class App extends Application {
             bValue.setMax(10);
             metalSettings.setDisable(true);
             metalSettings.setVisible(false);
+            refractionSettings.setDisable(true);
+            refractionSettings.setVisible(false);
         } else if (material instanceof Metal) {
             rValue.setMax(1);
             gValue.setMax(1);
             bValue.setMax(1);
             metalSettings.setDisable(false);
             metalSettings.setVisible(true);
+            refractionSettings.setDisable(true);
+            refractionSettings.setVisible(false);
             
             Metal metal = (Metal) material;
             fuzzField.setText(Double.toString(metal.getFuzz()));
+        } else if (material instanceof Dielectric) {
+            rValue.setMax(1);
+            gValue.setMax(1);
+            bValue.setMax(1);
+            metalSettings.setDisable(true);
+            metalSettings.setVisible(false);
+            refractionSettings.setDisable(false);
+            refractionSettings.setVisible(true);
+            
+            Dielectric dielectric = (Dielectric) material;
+            refractIndexField.setText(Double.toString(dielectric.getRefractiveIndex()));
         } else {
             rValue.setMax(1);
             gValue.setMax(1);
             bValue.setMax(1);
             metalSettings.setDisable(true);
             metalSettings.setVisible(false);
+            refractionSettings.setDisable(true);
+            refractionSettings.setVisible(false);
         }
         
         Hittable object = sphereSelect.getValue();

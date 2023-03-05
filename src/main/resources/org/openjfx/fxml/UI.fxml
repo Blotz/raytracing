@@ -192,12 +192,18 @@
                               </HBox>
                            </children>
                         </VBox>
-                        <VBox prefHeight="78.0" prefWidth="97.0">
+                        <VBox prefHeight="104.0" prefWidth="204.0">
                            <children>
-                              <HBox prefHeight="100.0" prefWidth="200.0" fx:id="metalSettings" visible="false">
+                              <HBox fx:id="metalSettings" prefHeight="100.0" prefWidth="200.0" visible="false">
                                  <children>
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="FuzzField" />
-                                    <TextField onAction="#validMetalFuzz" text="0.0" fx:id="fuzzField" />
+                                    <TextField fx:id="fuzzField" onAction="#validMetalFuzz" text="0.1" />
+                                 </children>
+                              </HBox>
+                              <HBox fx:id="refractionSettings" prefHeight="100.0" prefWidth="200.0" visible="false">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Refractive Index" />
+                                    <TextField fx:id="refractIndexField" onAction="#validRefractiveIndex" text="1.5" />
                                  </children>
                               </HBox>
                            </children>
